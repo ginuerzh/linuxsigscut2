@@ -1,4 +1,4 @@
-#This is the description of ip messager communication protocol.
+#summary This is the description of ip messager communication protocol.
 
 = Introduction =
 <pre class="prettyprint">
