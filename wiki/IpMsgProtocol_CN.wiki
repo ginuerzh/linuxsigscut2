@@ -4,7 +4,7 @@
 原文链接：[http://bbs.chinaunix.net/viewthread.php?tid=1015775]
 转载请注明作者名及原文出处
 
-<pre>
+<pre class=prettyprint>
 最近看到一些朋友在编写网络程序是遇到一些问题，故把以前做IPMSG时翻译的文档贴过来，希望对网络编程新手有所帮助，在寻找编程项目的同学们也可参照此文档写出自己的IPMSG。
 
 本文只包含其中几个比较重要的命令以及运行机制的中文翻译，更详细的内容请参照文后的IPMSG 协议英文文档
@@ -21,7 +21,7 @@
 
 = Details =
 
-<pre>
+<pre class=prettyprint>
 关于IP信使：
   IP信使使用TCP/UDP协议提供收发消息及文件(目录)。
 特性：
