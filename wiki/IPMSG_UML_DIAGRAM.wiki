@@ -1,7 +1,7 @@
 #summary IPMSG用例图与活动图
 
 = 1、用例图 =
-http://linuxsigscut2.googlecode.com/svn/wiki/userCase.JPG
+http://linuxsigscut2.googlecode.com/svn/wiki/user_case.JPG
 = 说明 =
     用户可通过在控制台（或UI）输入命令进行操作。
 
