@@ -17,5 +17,13 @@ messageUtils.c：实现messageUtils.h声明的函数
 
 ipmsg_protocol.h和ipmsg_protocol.c暂时未使用
 
+暂时只实现了以下几点：
+（1）运行程序时创建用户列表、消息列表，广播登录消息
+（2）创建接收UDP数据包的线程：接收UDP数据包，分析数据包，生成消息并挂到消息列表
+（3）创建处理消息的线程：从消息列表获取第一条消息，还未实现消息处理
+
 编译命令：gcc -o main userUtils.c messageUtils.c  main.c -lpthread
 执行命令：./main
+
+
+
