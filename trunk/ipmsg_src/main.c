@@ -8,6 +8,8 @@
 #include "ipmsg_protocol.h"
 #include "userUtils.h"
 #include "messageUtils.h"
+#include "interaction.h"
+
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <stdio.h>
@@ -20,6 +22,8 @@
 socket_fd udp_sockfd;
 struct sockaddr_in my_address;
 
+
+bool quit = false;
 
 int main(int argc, char *argv[]){
 
@@ -40,10 +44,19 @@ int main(int argc, char *argv[]){
 	pthread_create(&receiver_thread_id, NULL, (void *)*recv_udp_packets_thread, NULL);
 	pthread_create(&processor_thread_id, NULL, (void *)*process_messages_thread, NULL);
 
-	int* retn;
+	user_interaction();
+	
+	/*int* retn;
+	//等等子线程结束
 	if(-1 == pthread_join(receiver_thread_id, (void **)&retn) ||
 		-1 == pthread_join(processor_thread_id, (void **)&retn)){
 		perror("\nthread error");
+	}*/
+
+	if(0 != pthread_cancel(receiver_thread_id)){
+		perror("\nThread of receiver cancelation failed");
+	}else if( 0 != pthread_cancel(processor_thread_id)){
+		perror("\nThread of processor cancelation failed");
 	}
 	
 	return 0;
@@ -74,21 +87,23 @@ void login(){
 	}	
 }
 
+
+
 //接收UDP 数据包
 void* recv_udp_packets_thread(){
-	printf("\nHello,i am recv_udp_packets_thread");
+	//printf("\nHello,i am recv_udp_packets_thread");
 	char recv_buf[COMLEN];
 	int buf_len;
 	int client_sockfd;
 	struct sockaddr_in client_address;
 	int client_addr_len;
 	
-	while(1){
+	while(!quit){
 		if(-1 == (buf_len = recvfrom(udp_sockfd, recv_buf, COMLEN, 0, (struct sockaddr *)&client_address, &client_addr_len))){
 			perror("\nrecv error");
 			return 0;
 		}
-		printf("\n%s",recv_buf);
+		//printf("\n%s",recv_buf);
 		recv_buf[buf_len] = '\0';
 		parse_udp(recv_buf, buf_len, client_address);
 	}
@@ -97,23 +112,23 @@ void* recv_udp_packets_thread(){
 
 //处理消息的
 void* process_messages_thread(){
-	printf("\nHello,i am process_messages_thread");
+	//printf("\nHello,i am process_messages_thread");
 	msg m;
-	while(1){
+	while(!quit){
 		if(0 == get_msg(&m)){
 			switch(m.command){//处理消息，待完成......
 				case IPMSG_NOOPERATION: //不进行任何操作
-					printf("\ni am IPMSG_NOOPERATION");
+					//printf("\ni am IPMSG_NOOPERATION");
 					break;
 				case IPMSG_BR_ENTRY:
-					printf("\ni am IPMSG_BR_ENTRY");
+					//printf("\ni am IPMSG_BR_ENTRY");
 					break;
 				case IPMSG_BR_EXIT:
-					printf("\ni am IPMSG_NOOPERATION");
+					//printf("\ni am IPMSG_NOOPERATION");
 					break;
 
 				default:
-					printf("\ni am default");
+					//printf("\ni am default");
 					break;
 			}
 		}else{
@@ -145,7 +160,7 @@ void parse_udp(char* udp, int len, struct sockaddr_in sender_addr){
 	strcpy(tmp_buf[tmp_index], start);
 	//将分析结果插入消息列表
 	insert_msg(atoi(tmp_buf[0]), atoi(tmp_buf[1]), tmp_buf[2], tmp_buf[3], strtoul(tmp_buf[4], NULL, 10), tmp_buf[5], sender_addr);
-	show_msg_list();
+	//show_msg_list();
 	//printf("\nfinish");
 }
 

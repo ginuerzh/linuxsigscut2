@@ -4,15 +4,13 @@
   *
   */
 #ifndef MAIN_H
-#define MAIN_H
+#define MAIN_H 
 
-#include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/types.h>
 #include <netinet/in.h>
-#include <stdio.h>
 
 typedef int socket_fd;
-
 
 //µÇÂ¼
 void login();
