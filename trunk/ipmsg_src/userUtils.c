@@ -85,7 +85,7 @@ void delete_user_by_no(int no){
 void show_user_list(){
 	user* p;
 	printf("\n-------------------user list--------------------");
-	printf("\nuser name           |host name            |load name           |IP                  ");
+	printf("\nuser name           |host name              |load name           |IP                  ");
 	for(p = user_list_head; p != NULL; p = p->next){
 		printf("\n%-20s|%-20s|%-20s|%-20s", p->user_name, p->host_name, p->load_name,inet_ntoa((p->address).sin_addr ));
 	}
