@@ -1,4 +1,8 @@
-
+/*
+  *
+  *  操作和维护消息的工具集
+  *
+  */
 
 #ifndef MSG_UTILS_H
 #define MSG_UTILS_H
