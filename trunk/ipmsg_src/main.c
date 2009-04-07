@@ -53,6 +53,7 @@ int main(int argc, char *argv[]){
 		perror("\nthread error");
 	}*/
 
+	//直接取消子线程，不等待
 	if(0 != pthread_cancel(receiver_thread_id)){
 		perror("\nThread of receiver cancelation failed");
 	}else if( 0 != pthread_cancel(processor_thread_id)){
@@ -96,7 +97,7 @@ void* recv_udp_packets_thread(){
 	int buf_len;
 	int client_sockfd;
 	struct sockaddr_in client_address;
-	int client_addr_len;
+	int client_addr_len = sizeof(client_address);
 	
 	while(!quit){
 		if(-1 == (buf_len = recvfrom(udp_sockfd, recv_buf, COMLEN, 0, (struct sockaddr *)&client_address, &client_addr_len))){
@@ -116,17 +117,31 @@ void* process_messages_thread(){
 	msg m;
 	while(!quit){
 		if(0 == get_msg(&m)){
-			switch(m.command){//处理消息，待完成......
+			switch(m.command & 0x000000FF){//处理消息，待完成......
 				case IPMSG_NOOPERATION: //不进行任何操作
 					//printf("\ni am IPMSG_NOOPERATION");
 					break;
 				case IPMSG_BR_ENTRY:
 					//printf("\ni am IPMSG_BR_ENTRY");
+					printf("\nsomeone broadcast");
+					insert_user(m.sender_name, m.sernder_host_name, m.extra_msg, m.sender_addr);
+					send_udp_packet(IPMSG_ANSENTRY, NULL, m.sender_addr);
 					break;
 				case IPMSG_BR_EXIT:
 					//printf("\ni am IPMSG_NOOPERATION");
 					break;
+				case IPMSG_ANSENTRY:
+					//printf("\ni am IPMSG_ANSENTRY");
+					insert_user(m.sender_name, m.sernder_host_name, m.extra_msg, m.sender_addr);
+					break;
+				case IPMSG_SENDMSG:
+					printf("\nrecv one message");
 
+					break;
+				case IPMSG_RECVMSG:
+				
+					break;
+				
 				default:
 					//printf("\ni am default");
 					break;

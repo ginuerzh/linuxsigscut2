@@ -55,4 +55,12 @@ void delete_user_by_no(int no);
 void show_user_list();
 
 
+/*
+  *
+  * 得到用户自身的信息
+  * 参数:  空
+  * 返回值:  待定
+  */
+void get_own_msg();
+
 #endif
