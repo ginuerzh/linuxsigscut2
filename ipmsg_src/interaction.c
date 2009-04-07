@@ -23,8 +23,8 @@ const char* command_desc[] = {"show command list", "show user list", "send messa
 
 //处理用户输入
 void user_interaction(){
-	show_user_list();
-	show_command_list();
+	//show_user_list();
+	//show_command_list();
 	process_input();
 }
 
@@ -32,7 +32,7 @@ void user_interaction(){
 //显示命令列表
 void show_command_list(){
 	int i;
-	printf("\n----------------------------------------------user interface-------------------------------------------");
+	printf("\n----------------------------------------------command list-------------------------------------------");
 	printf("\nCommand        |description");
 	for(i = 0; i < 8; i++){
 		printf("\n%-15s %-20s", command_list[i], command_desc[i]);
@@ -42,9 +42,10 @@ void show_command_list(){
 //处理用户输入
 void process_input(){
 	bool exit =  false;
-	char input[100];
+	char input[50];
+	char history[10][50];//增加历史记录功能，待扩展......
 	char c;
-	int i;
+	int i,j = 0;
 	while(0 == exit){
 		printf("\nIPMSG >");
 		fflush(stdout);
@@ -75,7 +76,7 @@ void process_input(){
 				input[i] = c;
 			}else if(c == 10 && i > 0){
 				input[i] = '\0';
-			}else{
+			}else if(c >= 24 && c<=27){
 				getch();
 				getch();
 			}
@@ -113,6 +114,8 @@ void process_input(){
 
 void show_help_information(){
 	printf("\ni am help information.");
+	show_command_list();
+	show_msg_list();
 }
 
 
