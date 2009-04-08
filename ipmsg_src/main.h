@@ -22,6 +22,8 @@
 #include <sys/types.h>
 #include <netinet/in.h>
 
+#define HOST_NAME_LEN 50
+
 typedef int socket_fd;
 
 //登录

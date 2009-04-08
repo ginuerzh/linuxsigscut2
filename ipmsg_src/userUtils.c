@@ -14,11 +14,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/*
-  *
-  * 操作和维护用户列表的工具集
-  *
-  *//*
+
+ /*
   *
   * 操作和维护用户列表的工具集
   *
@@ -34,6 +31,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 extern socket_fd udp_sockfd;
 extern struct sockaddr_in my_address;
@@ -42,26 +40,51 @@ extern struct sockaddr_in my_address;
 user* user_list_head = NULL;
 user* user_list_tail = NULL;
 
-void create_user_list(){
+
+void create_user_list()
+{
+	/* 不需要将自己添加到表头，因为会收到自己的广播包
+	
 	//将自己添加到用户列表表头
+	char *user_name, host_name[HOST_NAME_LEN];
 	user* tmp_user;
-	tmp_user = (user *)malloc(sizeof(user));
-	strcpy(tmp_user->user_name, "v_bmouth");
-	strcpy(tmp_user->host_name, "v_HP");
-	strcpy(tmp_user->load_name, "v_bmouth");
+
+	user_name = getlogin();
+	if ( 0 != gethostname(host_name, HOST_NAME_LEN) )
+		strcpy(host_name, "HostName");
+	tmp_user = (user*)malloc(sizeof(user));
+	
+	//use the login user name as the default user name
+	strcpy(tmp_user->user_name, user_name);
+	strcpy(tmp_user->host_name, host_name);
+	strcpy(tmp_user->load_name, user_name);
 	tmp_user->address = my_address;
 	
 	user_list_head = tmp_user;
 	user_list_tail = tmp_user;
 	user_list_tail->next = NULL;
+	*/
+	return ;
 }
 
 
+void insert_user(char user_name[], char host_name[], char load_name[], struct sockaddr_in address)
+{
+	if (NULL == user_list_head ||NULL == user_list_tail) {
+		user* tmp_user;
+		tmp_user = (user *)malloc(sizeof(user));
+		strcpy(tmp_user->user_name, user_name);
+		strcpy(tmp_user->host_name, host_name);
+		strcpy(tmp_user->load_name, load_name);
+		tmp_user->address = address;
+	
+		user_list_head = tmp_user;
+		user_list_tail = tmp_user;
+		user_list_tail->next = NULL;
 
+		return ;
+	}
 
-void insert_user(char user_name[], char host_name[], char load_name[], struct sockaddr_in address){
-	if(NULL == user_list_head ||NULL == user_list_tail)
-		create_user_list();
 	//检查用户是否已在列表中
 	bool exist = false;
 	char old_ip[20];
@@ -69,27 +92,28 @@ void insert_user(char user_name[], char host_name[], char load_name[], struct so
 	inet_ntop(AF_INET, &address.sin_addr, new_ip, 16);
 	user* p;
 	p = user_list_head;
-	while(p != user_list_tail){
+	while (p != user_list_tail) {
 		//使用inet_ntop是因为它是线程安全的，
 		//使用inet_ntoa的话，就不能够在同一个函数的几个参数里面出席那两次inet_ntoa，
 		//或者是第一个inet_ntoa未使用结束之前，不要使用第二个
 		inet_ntop(AF_INET, &(p->address).sin_addr, old_ip, 16);
 		//inet_ntop(AF_INET, &address.sin_addr, new_ip, 16);
-		if(0 == strcmp(old_ip, new_ip)){
+		if (0 == strcmp(old_ip, new_ip)) {
 			exist = true;
 			break;
 		}
 		p = p->next;
 	}
-	if(!exist ){
+	
+	if (!exist) {
 		inet_ntop(AF_INET, &(p->address).sin_addr, old_ip, 16);
 		//inet_ntop(AF_INET, &address.sin_addr, new_ip, 16);
-		if(0 == strcmp(old_ip, new_ip)){
+		if (0 == strcmp(old_ip, new_ip)) {
 			exist = true;
 		}
 	}
 
-	if(!exist){
+	if (!exist) {
 		user* tmp_user;
 		tmp_user = (user *)malloc(sizeof(user));
 		strcpy(tmp_user->user_name, user_name);
@@ -102,6 +126,7 @@ void insert_user(char user_name[], char host_name[], char load_name[], struct so
 		user_list_tail->next = NULL;
 	}
 }
+
 
 void delete_user_by_no(int no){
 	if(no > 1){

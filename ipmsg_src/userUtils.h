@@ -30,6 +30,7 @@
 #include <netinet/in.h>
 #include <stdio.h>
 
+
 typedef struct user{
 	char user_name[30];//用户名
 	char host_name[30];//主机名
