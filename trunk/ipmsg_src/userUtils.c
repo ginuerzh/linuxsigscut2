@@ -16,11 +16,11 @@
  */
 /*
   *
-  * ²Ù×÷ºÍÎ¬»¤ÓÃ»§ÁĞ±íµÄ¹¤¾ß¼¯
+  * æ“ä½œå’Œç»´æŠ¤ç”¨æˆ·åˆ—è¡¨çš„å·¥å…·é›†
   *
   *//*
   *
-  * ²Ù×÷ºÍÎ¬»¤ÓÃ»§ÁĞ±íµÄ¹¤¾ß¼¯
+  * æ“ä½œå’Œç»´æŠ¤ç”¨æˆ·åˆ—è¡¨çš„å·¥å…·é›†
   *
   */
 
@@ -38,12 +38,12 @@
 extern socket_fd udp_sockfd;
 extern struct sockaddr_in my_address;
 
-//ÓÃ»§ÁĞ±í±íÍ·ºÍ±íÎ²£¬±íÍ·´æ·Åµ±Ç°ÓÃ»§×ÔÉíµÄĞÅÏ¢
+//ç”¨æˆ·åˆ—è¡¨è¡¨å¤´å’Œè¡¨å°¾ï¼Œè¡¨å¤´å­˜æ”¾å½“å‰ç”¨æˆ·è‡ªèº«çš„ä¿¡æ¯
 user* user_list_head = NULL;
 user* user_list_tail = NULL;
 
 void create_user_list(){
-	//½«×Ô¼ºÌí¼Óµ½ÓÃ»§ÁĞ±í±íÍ·
+	//å°†è‡ªå·±æ·»åŠ åˆ°ç”¨æˆ·åˆ—è¡¨è¡¨å¤´
 	user* tmp_user;
 	tmp_user = (user *)malloc(sizeof(user));
 	strcpy(tmp_user->user_name, "v_bmouth");
@@ -62,7 +62,7 @@ void create_user_list(){
 void insert_user(char user_name[], char host_name[], char load_name[], struct sockaddr_in address){
 	if(NULL == user_list_head ||NULL == user_list_tail)
 		create_user_list();
-	//¼ì²éÓÃ»§ÊÇ·ñÒÑÔÚÁĞ±íÖĞ
+	//æ£€æŸ¥ç”¨æˆ·æ˜¯å¦å·²åœ¨åˆ—è¡¨ä¸­
 	bool exist = false;
 	char old_ip[20];
 	char new_ip[20];
@@ -70,9 +70,9 @@ void insert_user(char user_name[], char host_name[], char load_name[], struct so
 	user* p;
 	p = user_list_head;
 	while(p != user_list_tail){
-		//Ê¹ÓÃinet_ntopÊÇÒòÎªËüÊÇÏß³Ì°²È«µÄ£¬
-		//Ê¹ÓÃinet_ntoaµÄ»°£¬¾Í²»ÄÜ¹»ÔÚÍ¬Ò»¸öº¯ÊıµÄ¼¸¸ö²ÎÊıÀïÃæ³öÏ¯ÄÇÁ½´Îinet_ntoa£¬
-		//»òÕßÊÇµÚÒ»¸öinet_ntoaÎ´Ê¹ÓÃ½áÊøÖ®Ç°£¬²»ÒªÊ¹ÓÃµÚ¶ş¸ö
+		//ä½¿ç”¨inet_ntopæ˜¯å› ä¸ºå®ƒæ˜¯çº¿ç¨‹å®‰å…¨çš„ï¼Œ
+		//ä½¿ç”¨inet_ntoaçš„è¯ï¼Œå°±ä¸èƒ½å¤Ÿåœ¨åŒä¸€ä¸ªå‡½æ•°çš„å‡ ä¸ªå‚æ•°é‡Œé¢å‡ºå¸­é‚£ä¸¤æ¬¡inet_ntoaï¼Œ
+		//æˆ–è€…æ˜¯ç¬¬ä¸€ä¸ªinet_ntoaæœªä½¿ç”¨ç»“æŸä¹‹å‰ï¼Œä¸è¦ä½¿ç”¨ç¬¬äºŒä¸ª
 		inet_ntop(AF_INET, &(p->address).sin_addr, old_ip, 16);
 		//inet_ntop(AF_INET, &address.sin_addr, new_ip, 16);
 		if(0 == strcmp(old_ip, new_ip)){

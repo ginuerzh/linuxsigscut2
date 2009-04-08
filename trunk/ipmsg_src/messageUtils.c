@@ -16,7 +16,7 @@
  */
 /*
   *
-  *  ²Ù×÷ºÍÎ¬»¤ÏûÏ¢µÄ¹¤¾ß¼¯
+  *  æ“ä½œå’Œç»´æŠ¤æ¶ˆæ¯çš„å·¥å…·é›†
   *
   */
 
@@ -27,15 +27,15 @@
 
 extern struct sockaddr_in my_address;
 
-//ÏûÏ¢ÁĞ±í
+//æ¶ˆæ¯åˆ—è¡¨
 msg* msg_list_head = NULL;
 msg* msg_list_tail = NULL;
 
 /*
   *
-  *  ½¨Á¢ÏûÏ¢ÁĞ±í, ¼´´´½¨Ò»¸öÍ·½áµã
-  *  ²ÎÊı:  ¿Õ
-  *  ·µ»ØÖµ: ´ı¶¨
+  *  å»ºç«‹æ¶ˆæ¯åˆ—è¡¨, å³åˆ›å»ºä¸€ä¸ªå¤´ç»“ç‚¹
+  *  å‚æ•°:  ç©º
+  *  è¿”å›å€¼: å¾…å®š
   *
   */
 void create_msg_list(){
@@ -53,9 +53,9 @@ void create_msg_list(){
 
 /*
   *
-  *  ²åÈëÏûÏ¢
-  *  ²ÎÊı:  °æ±¾ºÅ¡¢°ü±àºÅ¡¢·¢ËÍÕßĞÕÃû¡¢·¢ËÍÕßÖ÷»úÃû¡¢ÃüÁî×Ö¡¢¸½¼ÓĞÅÏ¢
-  *  ·µ»ØÖµ: ´ı¶¨
+  *  æ’å…¥æ¶ˆæ¯
+  *  å‚æ•°:  ç‰ˆæœ¬å·ã€åŒ…ç¼–å·ã€å‘é€è€…å§“åã€å‘é€è€…ä¸»æœºåã€å‘½ä»¤å­—ã€é™„åŠ ä¿¡æ¯
+  *  è¿”å›å€¼: å¾…å®š
   *
   */
 void insert_msg(int version, int packet_num, char sender_name[], char sender_host_name[], 
@@ -79,15 +79,15 @@ void insert_msg(int version, int packet_num, char sender_name[], char sender_hos
 
 /*
   *
-  *  É¾³ıµÚÒ»ÌõÏûÏ¢
-  *  ²ÎÊı:  ¿Õ
-  *  ·µ»ØÖµ:  ´ı¶¨
+  *  åˆ é™¤ç¬¬ä¸€æ¡æ¶ˆæ¯
+  *  å‚æ•°:  ç©º
+  *  è¿”å›å€¼:  å¾…å®š
   *
   */
 void delete_first_msg(){
 	if(msg_list_tail != msg_list_head && NULL != msg_list_head && NULL != msg_list_tail){
 		msg* p;
-		p = msg_list_head->next; //É¾³ıµÚ¶ş¸ö½Úµã
+		p = msg_list_head->next; //åˆ é™¤ç¬¬äºŒä¸ªèŠ‚ç‚¹
 		msg_list_head->next = p->next;
 		if(NULL == msg_list_head->next)
 			msg_list_tail = msg_list_head;
@@ -98,7 +98,7 @@ void delete_first_msg(){
 
 /*
   *
-  *  »ñÈ¡ÏûÏ¢
+  *  è·å–æ¶ˆæ¯
   *
   */
 int get_msg(msg *m){
@@ -116,9 +116,9 @@ int get_msg(msg *m){
 
 /*
   *
-  * ÏÔÊ¾ÏûÏ¢
-  * ²ÎÊı:  ¿Õ
-  * ·µ»ØÖµ:  ´ı¶¨
+  * æ˜¾ç¤ºæ¶ˆæ¯
+  * å‚æ•°:  ç©º
+  * è¿”å›å€¼:  å¾…å®š
   */
 void show_msg_list(){
 	msg* p;
