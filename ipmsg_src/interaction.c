@@ -31,7 +31,7 @@ const char* command_list[] = {"list", "showuser", "sendmsg", "sendfile", "recvfi
 const char* command_desc[] = {"show command list", "show user list", "send message", "send file", 
 	"receive file", "reflesh the user list", "exit", "show help information"};
 
-//´¦ÀíÓÃ»§ÊäÈë
+//å¤„ç†ç”¨æˆ·è¾“å…¥
 void user_interaction(){
 	//show_user_list();
 	//show_command_list();
@@ -39,7 +39,7 @@ void user_interaction(){
 }
 
 
-//ÏÔÊ¾ÃüÁîÁĞ±í
+//æ˜¾ç¤ºå‘½ä»¤åˆ—è¡¨
 void show_command_list(){
 	int i;
 	printf("\n----------------------------------------------command list-------------------------------------------");
@@ -49,11 +49,11 @@ void show_command_list(){
 	}
 }
 
-//´¦ÀíÓÃ»§ÊäÈë
+//å¤„ç†ç”¨æˆ·è¾“å…¥
 void process_input(){
 	bool exit =  false;
 	char input[50];
-	char history[10][50];//Ôö¼ÓÀúÊ·¼ÇÂ¼¹¦ÄÜ£¬´ıÀ©Õ¹......
+	char history[10][50];//å¢åŠ å†å²è®°å½•åŠŸèƒ½ï¼Œå¾…æ‰©å±•......
 	char c;
 	int i,j = 0;
 	while(0 == exit){
@@ -120,7 +120,7 @@ void process_input(){
 
 
 
-//ÏÔÊ¾°ïÖúĞÅÏ¢
+//æ˜¾ç¤ºå¸®åŠ©ä¿¡æ¯
 
 void show_help_information(){
 	printf("\ni am help information.");
@@ -129,9 +129,9 @@ void show_help_information(){
 }
 
 
-//ÊµÏÖLinux ÏÂµÄgetchº¯Êı:
-//ÄÜ¼ì²â PageUP PageDownÒÔ¼°ArrowsµÈ°´¼ü£¬F1, F2µÈ¹¦ÄÜ¼ü£¬
-//»á±»½âÊÍ³ÉÊäÈëÒ»¸ö×Ö·ûĞòÁĞ¡£¹¦ÄÜµÄÊµÏÖÊÇÍ¨¹ıioctlµ÷ÕûÖÕ¶ËµÄÊôĞÔ¡£--À´×ÔÍøÂç
+//å®ç°Linux ä¸‹çš„getchå‡½æ•°:
+//èƒ½æ£€æµ‹ PageUP PageDownä»¥åŠArrowsç­‰æŒ‰é”®ï¼ŒF1, F2ç­‰åŠŸèƒ½é”®ï¼Œ
+//ä¼šè¢«è§£é‡Šæˆè¾“å…¥ä¸€ä¸ªå­—ç¬¦åºåˆ—ã€‚åŠŸèƒ½çš„å®ç°æ˜¯é€šè¿‡ioctlè°ƒæ•´ç»ˆç«¯çš„å±æ€§ã€‚--æ¥è‡ªç½‘ç»œ
 
 char getch()
 {

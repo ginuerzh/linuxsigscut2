@@ -18,26 +18,26 @@
 #ifndef INTERACTION_H
 #define INTERACTION_H
 
-#define COMMAND_NUM 8;//供用户使用的命令数量
+#define COMMAND_NUM 8;//渚涚敤鎴蜂娇鐢ㄧ殑鍛戒护鏁伴噺
 #define true 1;
 #define false 0;
 typedef short int bool;
 
-//用户交互函数
+//鐢ㄦ埛浜や簰鍑芥暟
 void user_interaction();
 
-//处理用户输入
+//澶勭悊鐢ㄦ埛杈撳叆
 void process_input();
 
 
-//显示帮助信息
+//鏄剧ず甯姪淇℃伅
 void show_help_information();
 
 
-//显示命令列表
+//鏄剧ず鍛戒护鍒楄〃
 void show_command_list();
 
-//自定义Linux 下的getch函数
+//鑷畾涔塋inux 涓嬬殑getch鍑芥暟
 char getch();
 
 

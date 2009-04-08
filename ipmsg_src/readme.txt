@@ -1,35 +1,35 @@
-�ļ��ṹ��
-main.h�����һЩ��δ����ĺ������ṹ��������
+文件结构：
+main.h：存放一些还未归类的函数、结构体声明；
 
-main.c��������
+main.c：主程序；
 
-ipmsg.h����ŷɸ�Э���һЩ�궨��
+ipmsg.h：存放飞鸽协议的一些宏定义
 
-userUtils.h����Ÿ��û���صĺ������ṹ�����������紴���û��б�����
+userUtils.h：存放跟用户相关的函数、结构体声明，例如创建用户列表……
 
-userUtils.c��ʵ��userUtils.h�����ĺ���
+userUtils.c：实现userUtils.h声明的函数
 
-messageUtils.h����Ÿ���Ϣ��صĺ������ṹ�����������紴����Ϣ�б�����
+messageUtils.h：存放跟消息相关的函数、结构体声明，例如创建消息列表……
 
-messageUtils.c��ʵ��messageUtils.h�����ĺ���
+messageUtils.c：实现messageUtils.h声明的函数
 
-ע����Ϣ����IPMSG���ݰ�����Ϣ���������IPMSG���ݰ��ĸ����ֶ�
+注：消息不是IPMSG数据包，消息是用来存放IPMSG数据包的各个字段
 
-ipmsg_protocol.h��ipmsg_protocol.c��ʱδʹ��
+ipmsg_protocol.h和ipmsg_protocol.c暂时未使用
 
-��ʱֻʵ�������¼��㣺
-��1�����г���ʱ�����û��б�����Ϣ�б����㲥��¼��Ϣ
-��2����������UDP���ݰ����̣߳�����UDP���ݰ����������ݰ���������Ϣ���ҵ���Ϣ�б�
-��3������������Ϣ���̣߳�����Ϣ�б���ȡ��һ����Ϣ����δʵ����Ϣ����
+暂时只实现了以下几点：
+（1）运行程序时创建用户列表、消息列表，广播登录消息
+（2）创建接收UDP数据包的线程：接收UDP数据包，分析数据包，生成消息并挂到消息列表
+（3）创建处理消息的线程：从消息列表获取第一条消息，还未实现消息处理
 
-��Ҫ���ӵĻ������ܴ�Ż��У�
-��1�������û����룬���緢����Ϣ����
-��2��������Ϣ��������ѣ���Ҫ��ϤЭ��������֣��ж���Ϣ���Ͳ�����Ӧ����
+需要增加的基本功能大概还有：
+（1）处理用户输入，例如发送消息……
+（2）处理消息，这个最难，需要熟悉协议的命令字，判断消息类型并做相应处理
 
-���⻹�кܶ���ʱ��Ҫע������⣬������ʱ�뵽���ǵ�������Ϣ�б����û��б�ʱӦ��������ֹ����������뵽ʲô����������һ���о���
+此外还有很多编程时需要注意的问题，例如暂时想到的是当操作消息列表和用户列表时应加锁，防止出错，大家想到什么其他问题再一起研究。
 
-�������gcc -o main userUtils.c messageUtils.c  main.c -lpthread
-ִ�����./main
+编译命令：gcc -o main userUtils.c messageUtils.c  main.c -lpthread
+执行命令：./main
 
 
 

@@ -24,16 +24,16 @@
 
 typedef int socket_fd;
 
-//µÇÂ¼
+//ç™»å½•
 void login();
 
-//·ÖÎöUDP Êı¾İ°ü
+//åˆ†æUDP æ•°æ®åŒ…
 void parse_udp(char* udp, int len, struct sockaddr_in sender_addr);
 
-//½ÓÊÕUDP Êı¾İ°ü
+//æ¥æ”¶UDP æ•°æ®åŒ…
 void* recv_udp_packets_thread();
 
-//´¦ÀíÏûÏ¢µÄ
+//å¤„ç†æ¶ˆæ¯çš„
 void* process_messages_thread();
 
 #endif

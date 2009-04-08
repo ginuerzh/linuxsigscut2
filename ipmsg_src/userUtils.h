@@ -17,7 +17,7 @@
 
 /*
   *
-  * ²Ù×÷ºÍÎ¬»¤ÓÃ»§ÁĞ±íµÄ¹¤¾ß¼¯
+  * æ“ä½œå’Œç»´æŠ¤ç”¨æˆ·åˆ—è¡¨çš„å·¥å…·é›†
   *
   */
 
@@ -31,52 +31,52 @@
 #include <stdio.h>
 
 typedef struct user{
-	char user_name[30];//ÓÃ»§Ãû
-	char host_name[30];//Ö÷»úÃû
-	char group_name[30];//¹¤×÷×éÃû
-	char load_name[30];//µÇÂ¼Ãû
-	struct sockaddr_in address;//ÓÃ»§µØÖ·
+	char user_name[30];//ç”¨æˆ·å
+	char host_name[30];//ä¸»æœºå
+	char group_name[30];//å·¥ä½œç»„å
+	char load_name[30];//ç™»å½•å
+	struct sockaddr_in address;//ç”¨æˆ·åœ°å€
 	struct user* next;
 }user;
 
 /*
   *
-  * ´´½¨ÓÃ»§ÁĞ±í
-  * ²ÎÊı:  ¿Õ
-  * ·µ»ØÖµ:  ´ı¶¨
+  * åˆ›å»ºç”¨æˆ·åˆ—è¡¨
+  * å‚æ•°:  ç©º
+  * è¿”å›å€¼:  å¾…å®š
   */
 void create_user_list();
 
 /*
   *
-  * ²åÈëÓÃ»§
-  * ²ÎÊı:  ÓÃ»§Ãûuser_name, Ö÷»úÃûhost_name,  µÇÂ¼Ãûload_name,  ÓÃ»§µØÖ·address
-  * ·µ»ØÖµ:  ´ı¶¨
+  * æ’å…¥ç”¨æˆ·
+  * å‚æ•°:  ç”¨æˆ·åuser_name, ä¸»æœºåhost_name,  ç™»å½•åload_name,  ç”¨æˆ·åœ°å€address
+  * è¿”å›å€¼:  å¾…å®š
   */
 void insert_user(char user_name[], char host_name[], char load_name[], struct sockaddr_in address);
 
 /*
   *
-  * É¾³ıÓÃ»§--ÎŞÒâÒå£¬Ó¦¸ù¾İÓÃ»§IPÉ¾³ı
-  * ²ÎÊı:  noÎª¸ÃÓÃ»§ÔÚÁĞ±íÖĞµÄĞòºÅ
-  * ·µ»ØÖµ:  ´ı¶¨
+  * åˆ é™¤ç”¨æˆ·--æ— æ„ä¹‰ï¼Œåº”æ ¹æ®ç”¨æˆ·IPåˆ é™¤
+  * å‚æ•°:  noä¸ºè¯¥ç”¨æˆ·åœ¨åˆ—è¡¨ä¸­çš„åºå·
+  * è¿”å›å€¼:  å¾…å®š
   */
 void delete_user_by_no(int no);
 
 /*
   *
-  * ÏÔÊ¾ÓÃ»§
-  * ²ÎÊı:  ¿Õ
-  * ·µ»ØÖµ:  ´ı¶¨
+  * æ˜¾ç¤ºç”¨æˆ·
+  * å‚æ•°:  ç©º
+  * è¿”å›å€¼:  å¾…å®š
   */
 void show_user_list();
 
 
 /*
   *
-  * µÃµ½ÓÃ»§×ÔÉíµÄĞÅÏ¢
-  * ²ÎÊı:  ¿Õ
-  * ·µ»ØÖµ:  ´ı¶¨
+  * å¾—åˆ°ç”¨æˆ·è‡ªèº«çš„ä¿¡æ¯
+  * å‚æ•°:  ç©º
+  * è¿”å›å€¼:  å¾…å®š
   */
 void get_own_msg();
 
