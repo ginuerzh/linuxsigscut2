@@ -33,7 +33,7 @@ int main(int argc, char *argv[]){
 	udp_sockfd = socket(AF_INET,SOCK_DGRAM,0);
 	my_address.sin_family = AF_INET;
 	my_address.sin_addr.s_addr = htonl(INADDR_ANY);
-	my_address.sin_port = 2425;
+	my_address.sin_port = htons(2425);
 	bind(udp_sockfd, (struct sockaddr *)&my_address, (socklen_t)(sizeof(my_address)));//绑定UDP socket
 
 	create_user_list();//创建用户列表
