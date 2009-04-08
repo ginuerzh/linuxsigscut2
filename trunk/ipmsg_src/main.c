@@ -44,10 +44,10 @@ int main(int argc, char *argv[])
 	my_address.sin_family = AF_INET;
 	my_address.sin_addr.s_addr = htonl(INADDR_ANY);
 	my_address.sin_port = htons(2425);
-     
-        //绑定UDP socket
+ 
+	//绑定UDP socket
 	bind(udp_sockfd, (struct sockaddr *)&my_address,
-         (socklen_t)(sizeof(my_address)));
+		(socklen_t)(sizeof(my_address)));
 
 	create_user_list();//创建用户列表
 	create_msg_list();//创建消息列表
@@ -56,10 +56,10 @@ int main(int argc, char *argv[])
 
 	//创建接收UDP数据包线程和处理消息线程
 	pthread_create(&receiver_thread_id, NULL,
-                   (void *)*recv_udp_packets_thread, NULL);
+		(void *)*recv_udp_packets_thread, NULL);
 
 	pthread_create(&processor_thread_id, NULL, 
-                   (void *)*process_messages_thread, NULL);
+		(void *)*process_messages_thread, NULL);
 
 	user_interaction();
 	
@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
 	if (0 != pthread_cancel(receiver_thread_id)) {
 		perror("\nThread of receiver cancelation failed");
 	}
-        else if ( 0 != pthread_cancel(processor_thread_id)) {
+	else if ( 0 != pthread_cancel(processor_thread_id)) {
 		perror("\nThread of processor cancelation failed");
 	}
 	
@@ -88,6 +88,11 @@ void login()
 	socket_fd client_sockfd;
 	struct sockaddr_in client_address;
 	int client_addr_len;
+	char *user_name, host_name[HOST_NAME_LEN];
+
+	user_name = getlogin();
+	if ( 0 != gethostname(host_name, HOST_NAME_LEN) )
+		strcpy(host_name, "HostName");
 
 	client_address.sin_family = AF_INET;
 	client_address.sin_port = htons(2425);
@@ -95,18 +100,18 @@ void login()
 	bzero(&(client_address.sin_zero),8);
 	
 	setsockopt(udp_sockfd,SOL_SOCKET,SO_BROADCAST,
-        &so_broadcast,sizeof(so_broadcast));
+		&so_broadcast,sizeof(so_broadcast));
 	
 	command_word command;
 	command = IPMSG_BR_ENTRY;
 	char send_buf[COMLEN];
 
 	//生成广播消息，应重新设计一个函数来生成消息,待完成......
-	int buf_len=sprintf(send_buf, "1:1:userName:hostName:%u:nickname", command);
+	int buf_len=sprintf(send_buf, "1:1:%s:%s:%u:%s", user_name, host_name, command, user_name);
 	
 	client_addr_len = sizeof(client_address);
 	if (-1 == sendto(udp_sockfd, send_buf,buf_len, 0, 
-                     (struct sockaddr*)&client_address, client_addr_len)) {
+		(struct sockaddr*)&client_address, client_addr_len)) {
 		perror("\nbroadcast error");
 	}
 }
@@ -123,8 +128,8 @@ void* recv_udp_packets_thread()
 	int client_addr_len = sizeof(client_address);
 	
 	while (!quit) {
-        buf_len = recvfrom(udp_sockfd, recv_buf, COMLEN, 0, 
-            (struct sockaddr *)&client_address, &client_addr_len);
+		buf_len = recvfrom(udp_sockfd, recv_buf, COMLEN, 0, 
+			(struct sockaddr *)&client_address, &client_addr_len);
 		if (buf_len == -1) {
 			perror("\nrecv error");
 			return 0;
@@ -163,7 +168,7 @@ void* process_messages_thread()
             case IPMSG_SENDMSG:
                 printf("\nrecv one message");
 
-                break;
+			break;
             case IPMSG_RECVMSG:
             
                 break;
@@ -173,7 +178,7 @@ void* process_messages_thread()
                 break;
 			}
 		}
-        else {
+		else {
 			//printf("\nmessage list is empty.");
 			//sleep(200);//暂时没消息，睡眠等待一会，以免浪费CPU时间
 		}
@@ -195,7 +200,7 @@ void parse_udp(char* udp, int len, struct sockaddr_in sender_addr)
 
 	do {
 		end = strpbrk(start, ":");//得到start串中第一个':'号的地址，若没有则返回0
-		if (0 != end  && end < (udp+len)) {
+		if (0 != end && end < (udp+len)) {
 			strncpy(tmp_buf[tmp_index], start, (int)(end-start));
 			tmp_buf[tmp_index][(int)(end-start)] = '\0';
 			start = end + 1;
@@ -207,7 +212,7 @@ void parse_udp(char* udp, int len, struct sockaddr_in sender_addr)
 
 	//将分析结果插入消息列表
 	insert_msg(atoi(tmp_buf[0]), atoi(tmp_buf[1]), tmp_buf[2], tmp_buf[3], 
-        strtoul(tmp_buf[4], NULL, 10), tmp_buf[5], sender_addr);
+		strtoul(tmp_buf[4], NULL, 10), tmp_buf[5], sender_addr);
 	//show_msg_list();
 	//printf("\nfinish");
 }
