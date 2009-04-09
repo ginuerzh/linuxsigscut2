@@ -38,7 +38,8 @@ msg* msg_list_tail = NULL;
   *  返回值: 待定
   *
   */
-void create_msg_list(){
+void create_msg_list()
+{
 	msg_list_head = malloc(sizeof(msg));
 	msg_list_tail = msg_list_head;
 	msg_list_head->version = 1;
@@ -58,10 +59,13 @@ void create_msg_list(){
   *  返回值: 待定
   *
   */
-void insert_msg(int version, int packet_num, char sender_name[], char sender_host_name[], 
-					command_word comman, char extra_msg[], struct sockaddr_in sender_addr){
-	if(NULL == msg_list_head || NULL == msg_list_tail)
+void insert_msg(int version, int packet_num, char sender_name[], 
+		char sender_host_name[], command_word comman, char extra_msg[], 
+		struct sockaddr_in sender_addr)
+{
+	if (NULL == msg_list_head || NULL == msg_list_tail)
 		create_msg_list();
+
 	msg* p;
 	p = malloc(sizeof(msg));
 	p->version = version;
@@ -84,12 +88,15 @@ void insert_msg(int version, int packet_num, char sender_name[], char sender_hos
   *  返回值:  待定
   *
   */
-void delete_first_msg(){
-	if(msg_list_tail != msg_list_head && NULL != msg_list_head && NULL != msg_list_tail){
+void delete_first_msg()
+{
+	if (msg_list_tail != msg_list_head && 
+			NULL != msg_list_head && 
+			NULL != msg_list_tail) {
 		msg* p;
 		p = msg_list_head->next; //删除第二个节点
 		msg_list_head->next = p->next;
-		if(NULL == msg_list_head->next)
+		if (NULL == msg_list_head->next)
 			msg_list_tail = msg_list_head;
 		free(p);
 	}
@@ -101,13 +108,17 @@ void delete_first_msg(){
   *  获取消息
   *
   */
-int get_msg(msg *m){
-	if(msg_list_tail != msg_list_head && msg_list_head != NULL && msg_list_tail != NULL){
+int get_msg(msg *m)
+{
+	if (msg_list_tail != msg_list_head && 
+			msg_list_head != NULL && 
+			msg_list_tail != NULL) {
 		*m = *( msg_list_head->next); 
 		delete_first_msg();
 		//printf("\nget msg success.");
 		return 0;
-	}else{
+	}
+	else{
 		return -1;
 	}
 }
@@ -120,12 +131,17 @@ int get_msg(msg *m){
   * 参数:  空
   * 返回值:  待定
   */
-void show_msg_list(){
+void show_msg_list()
+{
 	msg* p;
 	printf("\n----------------------------------------------msg list-------------------------------------------");
 	printf("\nversion   |packet number       |sender name         |sender host name    |command             |extra msg           |sender IP");
-	for(p = msg_list_head; p != NULL; p = p->next){
-		printf("\n%-10d|%-20d|%-20s|%-20s|%-20u|%-20s|%20s", p->version, p->packet_num, p->sender_name, p->sernder_host_name, p->command, p->extra_msg,inet_ntoa((p->sender_addr).sin_addr ));
+
+	for (p = msg_list_head; p != NULL; p = p->next) {
+		printf("\n%-10d|%-20d|%-20s|%-20s|%-20u|%-20s|%20s", 
+				p->version, p->packet_num, p->sender_name, 
+				p->sernder_host_name, p->command, p->extra_msg,
+				inet_ntoa((p->sender_addr).sin_addr ));
 	}
 }
 
