@@ -27,20 +27,22 @@
 
 extern bool quit;
 
-const char* command_list[] = {"list", "showuser", "sendmsg", "sendfile", "recvfile", "reflesh", "exit", "help"};
+const char* command_list[] = {"list", "showuser", "sendmsg", "sendfile", "recvfile", "reflesh", "exit", "help", "recvmsg"};
 const char* command_desc[] = {"show command list", "show user list", "send message", "send file", 
-	"receive file", "reflesh the user list", "exit", "show help information"};
+	"receive file", "reflesh the user list", "exit", "show help information", "receive message from message list"};
 
-//å¤„ç†ç”¨æˆ·è¾“å…¥
-void user_interaction(){
+//´¦ÀíÓÃ»§ÊäÈë
+void user_interaction()
+{
 	//show_user_list();
 	//show_command_list();
 	process_input();
 }
 
 
-//æ˜¾ç¤ºå‘½ä»¤åˆ—è¡¨
-void show_command_list(){
+//ÏÔÊ¾ÃüÁîÁÐ±í
+void show_command_list()
+{
 	int i;
 	printf("\n----------------------------------------------command list-------------------------------------------");
 	printf("\nCommand        |description");
@@ -49,69 +51,86 @@ void show_command_list(){
 	}
 }
 
-//å¤„ç†ç”¨æˆ·è¾“å…¥
-void process_input(){
+//´¦ÀíÓÃ»§ÊäÈë
+void process_input()
+{
 	bool exit =  false;
 	char input[50];
-	char history[10][50];//å¢žåŠ åŽ†å²è®°å½•åŠŸèƒ½ï¼Œå¾…æ‰©å±•......
+	char history[10][50];//Ôö¼ÓÀúÊ·¼ÇÂ¼¹¦ÄÜ£¬´ýÀ©Õ¹......
 	char c;
 	int i,j = 0;
-	while(0 == exit){
+	while(0 == exit) {
 		printf("\nIPMSG >");
 		fflush(stdout);
 		//c = getch();
 		i = 0;
-		do{
+		do {
 			fflush(stdout);
 			fflush(stdin);
 			c = getch();
-			if(c == 127 && i > 0){
+			if(c == 127 && i > 0) {
 				printf("\b \b");
 				input[i] = '\0';
 				i--;
-			}else if(c >= 'a' && c <= 'z' || c >= '0' && c <= '9'){
+			}
+			else if(c >= 'a' && c <= 'z' || c >= '0' && c <= '9') {
 				//printf("[a-z]%c", c);
 				putchar(c);
 				input[i] = c;
 				i++;
 				//scanf("%s", input+1);
-			}else if(c >= 'A' && c <= 'Z'){
+			}
+			else if(c >= 'A' && c <= 'Z') {
 				c += 32;
 				//printf("[A-Z]%c", c);
 				putchar(c);
 				input[i] = c;
 				i++;
 				//scanf("%s", input+1);
-			}else if(c == 10 && i == 0 && c !=127){
+			}
+			else if(c == 10 && i == 0 && c !=127) {
 				input[i] = c;
-			}else if(c == 10 && i > 0){
+			}
+			else if(c == 10 && i > 0) {
 				input[i] = '\0';
-			}else if(c >= 24 && c<=27){
+			}
+			else if(c >= 24 && c<=27) {
 				getch();
 				getch();
 			}
 		}while(c != 10);
-		if(input[0] != 10){
-			if(0 == strcmp(input, command_list[0])){
+		if(input[0] != 10) {
+			if(0 == strcmp(input, command_list[0])) {
 				show_command_list();
-			}else if(0 == strcmp(input, command_list[1])){
+			} 
+			else if(0 == strcmp(input, command_list[1])) {
 				show_user_list();
-			}else if(0 == strcmp(input, command_list[2])){
+			}
+			else if(0 == strcmp(input, command_list[2])) {
 
-			}else if(0 == strcmp(input, command_list[3])){
+			}
+			else if(0 == strcmp(input, command_list[3])) {
 
-			}else if(0 == strcmp(input, command_list[4])){
+			}
+			else if(0 == strcmp(input, command_list[4])) {
 
-			}else if(0 == strcmp(input, command_list[5])){
+			}
+			else if(0 == strcmp(input, command_list[5])) {
 				login();
-			}else if(0 == strcmp(input, command_list[6])){
+			}
+			else if(0 == strcmp(input, command_list[6])) {
 				printf("Preparing exit ............\n");
 				exit = true;
 				quit = true;
 				fflush(stdout);
-			}else if(0 == strcmp(input, command_list[7])){
+			}
+			else if(0 == strcmp(input, command_list[7])) {
 				show_help_information();
-			}else{
+			}
+			else if(0 == strcmp(input, command_list[8])) {
+				show_recv_msg();
+			}
+			else {
 				printf("\nerror input!");
 			}
 		}
@@ -120,18 +139,34 @@ void process_input(){
 
 
 
-//æ˜¾ç¤ºå¸®åŠ©ä¿¡æ¯
+/* ÏÔÊ¾°ïÖúÐÅÏ¢ */
 
-void show_help_information(){
+void show_help_information()
+{
 	printf("\ni am help information.");
 	show_command_list();
 	show_msg_list();
 }
 
+/* ÏÔÊ¾½ÓÊÕµ½µÄÏûÏ¢ */
+void show_recv_msg()
+{
+	msg m;
+	if(-1 == get_recv_msg(&m)) {
+		printf("\nrecv_msg_list is empty");
+	}
+	else {
+		printf("\n%s: %s", m.sender_name, m.extra_msg);
+	}
+}
 
-//å®žçŽ°Linux ä¸‹çš„getchå‡½æ•°:
-//èƒ½æ£€æµ‹ PageUP PageDownä»¥åŠArrowsç­‰æŒ‰é”®ï¼ŒF1, F2ç­‰åŠŸèƒ½é”®ï¼Œ
-//ä¼šè¢«è§£é‡Šæˆè¾“å…¥ä¸€ä¸ªå­—ç¬¦åºåˆ—ã€‚åŠŸèƒ½çš„å®žçŽ°æ˜¯é€šè¿‡ioctlè°ƒæ•´ç»ˆç«¯çš„å±žæ€§ã€‚--æ¥è‡ªç½‘ç»œ
+
+/* 
+ * ÊµÏÖLinux ÏÂµÄgetchº¯Êý:
+ * ÄÜ¼ì²â PageUP PageDownÒÔ¼°ArrowsµÈ°´¼ü£¬F1, F2µÈ¹¦ÄÜ¼ü£¬
+ * »á±»½âÊÍ³ÉÊäÈëÒ»¸ö×Ö·ûÐòÁÐ¡£¹¦ÄÜµÄÊµÏÖÊÇÍ¨¹ýioctlµ÷ÕûÖÕ¶ËµÄÊôÐÔ¡£--À´×ÔÍøÂç
+ *
+ */
 
 char getch()
 {

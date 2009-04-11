@@ -45,16 +45,16 @@ int main(int argc, char *argv[])
 	my_address.sin_addr.s_addr = htonl(INADDR_ANY);
 	my_address.sin_port = htons(2425);
  
-	//ç»‘å®šUDP socket
+	//°ó¶¨UDP socket
 	bind(udp_sockfd, (struct sockaddr *)&my_address,
 		(socklen_t)(sizeof(my_address)));
 
-	create_user_list();//åˆ›å»ºç”¨æˆ·åˆ—è¡¨
-	create_msg_list();//åˆ›å»ºæ¶ˆæ¯åˆ—è¡¨
+	create_user_list();//´´½¨ÓÃ»§ÁĞ±í
+	create_msg_list();//´´½¨ÏûÏ¢ÁĞ±í
 
 	login();	
 
-	//åˆ›å»ºæ¥æ”¶UDPæ•°æ®åŒ…çº¿ç¨‹å’Œå¤„ç†æ¶ˆæ¯çº¿ç¨‹
+	//´´½¨½ÓÊÕUDPÊı¾İ°üÏß³ÌºÍ´¦ÀíÏûÏ¢Ïß³Ì
 	pthread_create(&receiver_thread_id, NULL,
 		(void *)*recv_udp_packets_thread, NULL);
 
@@ -64,13 +64,13 @@ int main(int argc, char *argv[])
 	user_interaction();
 	
 	/*int* retn;
-	//ç­‰ç­‰å­çº¿ç¨‹ç»“æŸ
+	//µÈµÈ×ÓÏß³Ì½áÊø
 	if(-1 == pthread_join(receiver_thread_id, (void **)&retn) ||
 		-1 == pthread_join(processor_thread_id, (void **)&retn)){
 		perror("\nthread error");
 	}*/
 
-	//ç›´æ¥å–æ¶ˆå­çº¿ç¨‹ï¼Œä¸ç­‰å¾…
+	//Ö±½ÓÈ¡Ïû×ÓÏß³Ì£¬²»µÈ´ı
 	if (0 != pthread_cancel(receiver_thread_id)) {
 		perror("\nThread of receiver cancelation failed");
 	}
@@ -90,7 +90,7 @@ void login()
 	int client_addr_len;
 	char *user_name, host_name[HOST_NAME_LEN];
 
-	user_name = getlogin();
+	user_name = (char *)getlogin();
 	if ( 0 != gethostname(host_name, HOST_NAME_LEN) )
 		strcpy(host_name, "HostName");
 
@@ -106,7 +106,7 @@ void login()
 	command = IPMSG_BR_ENTRY;
 	char send_buf[COMLEN];
 
-	//ç”Ÿæˆå¹¿æ’­æ¶ˆæ¯ï¼Œåº”é‡æ–°è®¾è®¡ä¸€ä¸ªå‡½æ•°æ¥ç”Ÿæˆæ¶ˆæ¯,å¾…å®Œæˆ......
+	//Éú³É¹ã²¥ÏûÏ¢£¬Ó¦ÖØĞÂÉè¼ÆÒ»¸öº¯ÊıÀ´Éú³ÉÏûÏ¢,´ıÍê³É......
 	int buf_len=sprintf(send_buf, "1:1:%s:%s:%u:%s", user_name, host_name, command, user_name);
 	
 	client_addr_len = sizeof(client_address);
@@ -117,7 +117,7 @@ void login()
 }
 
 
-//æ¥æ”¶UDPæ•°æ®åŒ…çš„çº¿ç¨‹
+//½ÓÊÕUDPÊı¾İ°üµÄÏß³Ì
 void* recv_udp_packets_thread()
 {
 	//printf("\nHello,i am recv_udp_packets_thread");
@@ -141,15 +141,15 @@ void* recv_udp_packets_thread()
 	return 0;
 }
 
-//å¤„ç†æ¶ˆæ¯çš„çº¿ç¨‹
+//´¦ÀíÏûÏ¢µÄÏß³Ì
 void* process_messages_thread()
 {
 	//printf("\nHello,i am process_messages_thread");
 	msg m;
 	while (!quit) {
 		if (0 == get_msg(&m)) {
-			switch (m.command & 0x000000FF) {//å¤„ç†æ¶ˆæ¯ï¼Œå¾…å®Œæˆ......
-            case IPMSG_NOOPERATION: //ä¸è¿›è¡Œä»»ä½•æ“ä½œ
+			switch (m.command & 0x000000FF) {//´¦ÀíÏûÏ¢£¬´ıÍê³É......
+            case IPMSG_NOOPERATION: //²»½øĞĞÈÎºÎ²Ù×÷
                 //printf("\ni am IPMSG_NOOPERATION");
                 break;
             case IPMSG_BR_ENTRY:
@@ -166,9 +166,11 @@ void* process_messages_thread()
                 insert_user(m.sender_name, m.sernder_host_name, m.extra_msg, m.sender_addr);
                 break;
             case IPMSG_SENDMSG:
-                printf("\nrecv one message");
-
-			break;
+                //printf("\nrecv one message");
+		recv_msg(m);
+                insert_recv_msg(m);
+		//printf("\n%s",m.extra_msg);
+		break;
             case IPMSG_RECVMSG:
             
                 break;
@@ -180,7 +182,7 @@ void* process_messages_thread()
 		}
 		else {
 			//printf("\nmessage list is empty.");
-			//sleep(200);//æš‚æ—¶æ²¡æ¶ˆæ¯ï¼Œç¡çœ ç­‰å¾…ä¸€ä¼šï¼Œä»¥å…æµªè´¹CPUæ—¶é—´
+			//sleep(200);//ÔİÊ±Ã»ÏûÏ¢£¬Ë¯ÃßµÈ´ıÒ»»á£¬ÒÔÃâÀË·ÑCPUÊ±¼ä
 		}
 	}
 	
@@ -188,7 +190,7 @@ void* process_messages_thread()
 }
 
 
-//å¤„ç†UDPæ•°æ®åŒ…
+//´¦ÀíUDPÊı¾İ°ü
 void parse_udp(char* udp, int len, struct sockaddr_in sender_addr)
 {
 	char* end;
@@ -199,7 +201,7 @@ void parse_udp(char* udp, int len, struct sockaddr_in sender_addr)
 	int tmp_index = 0;
 
 	do {
-		end = strpbrk(start, ":");//å¾—åˆ°startä¸²ä¸­ç¬¬ä¸€ä¸ª':'å·çš„åœ°å€ï¼Œè‹¥æ²¡æœ‰åˆ™è¿”å›0
+		end = strpbrk(start, ":");//µÃµ½start´®ÖĞµÚÒ»¸ö':'ºÅµÄµØÖ·£¬ÈôÃ»ÓĞÔò·µ»Ø0
 		if (0 != end && end < (udp+len)) {
 			strncpy(tmp_buf[tmp_index], start, (int)(end-start));
 			tmp_buf[tmp_index][(int)(end-start)] = '\0';
@@ -210,7 +212,7 @@ void parse_udp(char* udp, int len, struct sockaddr_in sender_addr)
 
 	strcpy(tmp_buf[tmp_index], start);
 
-	//å°†åˆ†æç»“æœæ’å…¥æ¶ˆæ¯åˆ—è¡¨
+	//½«·ÖÎö½á¹û²åÈëÏûÏ¢ÁĞ±í
 	insert_msg(atoi(tmp_buf[0]), atoi(tmp_buf[1]), tmp_buf[2], tmp_buf[3], 
 		strtoul(tmp_buf[4], NULL, 10), tmp_buf[5], sender_addr);
 	//show_msg_list();

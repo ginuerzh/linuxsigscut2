@@ -16,7 +16,7 @@
  */
 /*
   *
-  *  IPMsgåè®®æºæ–‡ä»¶
+  *  IPMsgĞ­ÒéÔ´ÎÄ¼ş
   *
   */
 
@@ -24,25 +24,28 @@
 #include "ipmsg.h"
 #include "main.h"
 #include "userUtils.h"
-
+#include <sys/time.h>
+#include <unistd.h>
 
 extern socket_fd udp_sockfd;
 
 /*
   *
-  *  å‘é€udpæ•°æ®åŒ…
-  *  å‚æ•°:æš‚æ—¶æƒ³åˆ°çš„æ˜¯å‘½ä»¤å­—ã€é™„åŠ æ¶ˆæ¯ï¼Œå¾…æ‰©å±•
-  *  è¿”å›å€¼:å¾…å®š
+  *  ·¢ËÍudpÊı¾İ°ü
+  *  ²ÎÊı:ÔİÊ±Ïëµ½µÄÊÇÃüÁî×Ö¡¢¸½¼ÓÏûÏ¢£¬´ıÀ©Õ¹
+  *  ·µ»ØÖµ:´ı¶¨
   */
-void send_udp_packet(command_word command, char extra_msg[], struct sockaddr_in client_addr){
+void send_udp_packet(command_word command, char extra_msg[], struct sockaddr_in client_addr)
+{
 	user own;
 	get_own_msg(&own);
 	char send_buf[COMLEN];
 	int buf_len;
 	int client_addr_len;
+	int cur_time = (int)time((time_t *)NULL);//»ñÈ¡ÏµÍ³Ê±¼ä
 	
-	switch(command & 0x000000FF){//å¤„ç†æ¶ˆæ¯ï¼Œå¾…å®Œæˆ......
-		case IPMSG_NOOPERATION: //ä¸è¿›è¡Œä»»ä½•æ“ä½œ
+	switch(command & 0x000000FF){//´¦ÀíÏûÏ¢£¬´ıÍê³É......
+		case IPMSG_NOOPERATION: //²»½øĞĞÈÎºÎ²Ù×÷
 			
 			break;
 		case IPMSG_BR_ENTRY:
@@ -52,15 +55,31 @@ void send_udp_packet(command_word command, char extra_msg[], struct sockaddr_in 
 			
 			break;
 		case IPMSG_ANSENTRY:
-			buf_len =  sprintf(send_buf, "1:1:%s:%s:%u:%s", own.user_name, own.host_name, command, own.load_name);
+			buf_len = sprintf(send_buf, "1:%d:%s:%s:%u:%s", cur_time, own.user_name, own.host_name, command, own.load_name);
 			client_addr_len = sizeof(client_addr);
 			if(-1 == sendto(udp_sockfd, send_buf,buf_len, 0, (struct sockaddr*)&client_addr, client_addr_len)){
 				perror("\nbroadcast error");
 			}
 			break;
+		case IPMSG_RECVMSG:
+			buf_len = sprintf(send_buf, "1:%d:%s:%s:%u:%s", cur_time, own.user_name, own.host_name, command, extra_msg);
+			client_addr_len = sizeof(client_addr);
+			if(-1 == sendto(udp_sockfd, send_buf, buf_len, 0, (struct sockaddr *)&client_addr, client_addr_len)) {
+				perror("\nresponse error");
+			}
 		default:
 
 			break;
 	}	
+}
+
+/* ½ÓÊÕÏûÏ¢ */
+void recv_msg(msg m)
+{
+	if((m.command & IPMSG_SENDCHECKOPT) == IPMSG_SENDCHECKOPT) {
+		char extra_msg[100];
+		sprintf(extra_msg, "%i", m.packet_num);
+		send_udp_packet(IPMSG_RECVMSG, extra_msg, m.sender_addr);
+	}
 }
 
