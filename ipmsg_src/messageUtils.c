@@ -16,7 +16,7 @@
  */
 /*
   *
-  *  æ“ä½œå’Œç»´æŠ¤æ¶ˆæ¯çš„å·¥å…·é›†
+  *  ²Ù×÷ºÍÎ¬»¤ÏûÏ¢µÄ¹¤¾ß¼¯
   *
   */
 
@@ -27,15 +27,20 @@
 
 extern struct sockaddr_in my_address;
 
-//æ¶ˆæ¯åˆ—è¡¨
-msg* msg_list_head = NULL;
-msg* msg_list_tail = NULL;
+//ÏûÏ¢ÁĞ±í
+msg *msg_list_head = NULL;
+msg *msg_list_tail = NULL;
 
+
+//½ÓÊÕÏûÏ¢ÁĞ±í
+msg *recv_msg_list_head = NULL;
+msg *recv_msg_list_tail = NULL;
+int recv_msg_counter = 0;
 /*
   *
-  *  å»ºç«‹æ¶ˆæ¯åˆ—è¡¨, å³åˆ›å»ºä¸€ä¸ªå¤´ç»“ç‚¹
-  *  å‚æ•°:  ç©º
-  *  è¿”å›å€¼: å¾…å®š
+  *  ½¨Á¢ÏûÏ¢ÁĞ±í, ¼´´´½¨Ò»¸öÍ·½áµã
+  *  ²ÎÊı:  ¿Õ
+  *  ·µ»ØÖµ: ´ı¶¨
   *
   */
 void create_msg_list()
@@ -54,9 +59,9 @@ void create_msg_list()
 
 /*
   *
-  *  æ’å…¥æ¶ˆæ¯
-  *  å‚æ•°:  ç‰ˆæœ¬å·ã€åŒ…ç¼–å·ã€å‘é€è€…å§“åã€å‘é€è€…ä¸»æœºåã€å‘½ä»¤å­—ã€é™„åŠ ä¿¡æ¯
-  *  è¿”å›å€¼: å¾…å®š
+  *  ²åÈëÏûÏ¢
+  *  ²ÎÊı:  °æ±¾ºÅ¡¢°ü±àºÅ¡¢·¢ËÍÕßĞÕÃû¡¢·¢ËÍÕßÖ÷»úÃû¡¢ÃüÁî×Ö¡¢¸½¼ÓĞÅÏ¢
+  *  ·µ»ØÖµ: ´ı¶¨
   *
   */
 void insert_msg(int version, int packet_num, char sender_name[], 
@@ -83,9 +88,9 @@ void insert_msg(int version, int packet_num, char sender_name[],
 
 /*
   *
-  *  åˆ é™¤ç¬¬ä¸€æ¡æ¶ˆæ¯
-  *  å‚æ•°:  ç©º
-  *  è¿”å›å€¼:  å¾…å®š
+  *  É¾³ıµÚÒ»ÌõÏûÏ¢
+  *  ²ÎÊı:  ¿Õ
+  *  ·µ»ØÖµ:  ´ı¶¨
   *
   */
 void delete_first_msg()
@@ -94,7 +99,7 @@ void delete_first_msg()
 			NULL != msg_list_head && 
 			NULL != msg_list_tail) {
 		msg* p;
-		p = msg_list_head->next; //åˆ é™¤ç¬¬äºŒä¸ªèŠ‚ç‚¹
+		p = msg_list_head->next; //É¾³ıµÚ¶ş¸ö½Úµã
 		msg_list_head->next = p->next;
 		if (NULL == msg_list_head->next)
 			msg_list_tail = msg_list_head;
@@ -105,7 +110,7 @@ void delete_first_msg()
 
 /*
   *
-  *  è·å–æ¶ˆæ¯
+  *  »ñÈ¡ÏûÏ¢
   *
   */
 int get_msg(msg *m)
@@ -127,9 +132,9 @@ int get_msg(msg *m)
 
 /*
   *
-  * æ˜¾ç¤ºæ¶ˆæ¯
-  * å‚æ•°:  ç©º
-  * è¿”å›å€¼:  å¾…å®š
+  * ÏÔÊ¾ÏûÏ¢
+  * ²ÎÊı:  ¿Õ
+  * ·µ»ØÖµ:  ´ı¶¨
   */
 void show_msg_list()
 {
@@ -143,5 +148,65 @@ void show_msg_list()
 				p->sernder_host_name, p->command, p->extra_msg,
 				inet_ntoa((p->sender_addr).sin_addr ));
 	}
+}
+
+/*
+ *
+ *  ²åÈë½ÓÊÕÏûÏ¢
+ *
+ */
+void insert_recv_msg(msg m)
+{
+	if(recv_msg_list_head == NULL) {
+		recv_msg_list_head = malloc(sizeof(msg));
+		/*recv_msg_list_head->version = m->version;
+		recv_msg_list_head->packet_num = m->packet_num;
+		strcpy(recv_msg_list_head->sender_name, m->sender_name);
+		strcpy(recv_msg_list_head->sender_host_name, m->sender_host_name);
+		recv*/
+		*recv_msg_list_head = m;
+		recv_msg_list_head->next = NULL;
+		recv_msg_list_tail = recv_msg_list_head;
+		/*recv_msg.version = m.version;
+		recv_msg.packet_num = m.packet_num;*/
+	}
+	else {
+		msg *p;
+		p = malloc(sizeof(msg));
+		*p = m;
+		p->next = NULL;
+		recv_msg_list_tail->next = p;
+		recv_msg_list_tail = p;
+	}
+	recv_msg_counter++;
+}
+
+/* È¡½ÓÊÕÏûÏ¢ */
+
+int get_recv_msg(msg *m)
+{
+	if(NULL == recv_msg_list_head) {
+		m = NULL;
+		return -1;
+	}
+	else {
+		msg *p;
+		p = recv_msg_list_head;
+		*m = *p;
+		recv_msg_list_head = recv_msg_list_head->next;
+		m->next = NULL;
+		if(NULL == recv_msg_list_head) {
+			recv_msg_list_tail = NULL;
+		}
+		recv_msg_counter--;
+		free(p);
+		return 1;
+	}
+}
+
+/* »ñÈ¡½ÓÊÕÏûÏ¢×ÜÊı */
+int get_recv_msg_count()
+{
+	return recv_msg_counter;
 }
 
