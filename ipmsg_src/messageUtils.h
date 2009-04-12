@@ -17,7 +17,7 @@
 
 /*
   *
-  *  ²Ù×÷ºÍÎ¬»¤ÏûÏ¢µÄ¹¤¾ß¼¯
+  *  æ“ä½œå’Œç»´æŠ¤æ¶ˆæ¯çš„å·¥å…·é›†
   *
   */
 
@@ -37,31 +37,31 @@ typedef unsigned long command_word;
 
 
 typedef struct message{
-	int version;//°æ±¾ºÅ
-	int packet_num;//°ü±àºÅ
-	char sender_name[30];//·¢ËÍÕßĞÕÃû
-	char sernder_host_name[30];//·¢ËÍÕßÖ÷»úÃû
-	command_word command;	//ÃüÁî×Ö
-	char extra_msg[100];//¸½¼ÓĞÅÏ¢
+	int version;//ç‰ˆæœ¬å·
+	int packet_num;//åŒ…ç¼–å·
+	char sender_name[30];//å‘é€è€…å§“å
+	char sernder_host_name[30];//å‘é€è€…ä¸»æœºå
+	command_word command;	//å‘½ä»¤å­—
+	char extra_msg[100];//é™„åŠ ä¿¡æ¯
 	struct sockaddr_in sender_addr;
-	struct message* next;//ÏÂÒ»ÌõÏûÏ¢µÄÖ¸Õë
+	struct message* next;//ä¸‹ä¸€æ¡æ¶ˆæ¯çš„æŒ‡é’ˆ
 }msg;
 
 
 /*
   *
-  *  ½¨Á¢ÏûÏ¢ÁĞ±í, ¼´´´½¨Ò»¸öÍ·½áµã£¬°üº¬¿ÕĞÅÏ¢
-  *  ²ÎÊı:  ¿Õ
-  *  ·µ»ØÖµ: ´ı¶¨
+  *  å»ºç«‹æ¶ˆæ¯åˆ—è¡¨, å³åˆ›å»ºä¸€ä¸ªå¤´ç»“ç‚¹ï¼ŒåŒ…å«ç©ºä¿¡æ¯
+  *  å‚æ•°:  ç©º
+  *  è¿”å›å€¼: å¾…å®š
   *
   */
 void create_msg_list();
 
 /*
   *
-  *  ²åÈëÏûÏ¢
-  *  ²ÎÊı:  °æ±¾ºÅ¡¢°ü±àºÅ¡¢·¢ËÍÕßĞÕÃû¡¢·¢ËÍÕßÖ÷»úÃû¡¢ÃüÁî×Ö¡¢¸½¼ÓĞÅÏ¢
-  *  ·µ»ØÖµ: ´ı¶¨
+  *  æ’å…¥æ¶ˆæ¯
+  *  å‚æ•°:  ç‰ˆæœ¬å·ã€åŒ…ç¼–å·ã€å‘é€è€…å§“åã€å‘é€è€…ä¸»æœºåã€å‘½ä»¤å­—ã€é™„åŠ ä¿¡æ¯
+  *  è¿”å›å€¼: å¾…å®š
   *
   */
 void insert_msg(int version, int packet_num, char sender_name[], char sender_host_name[], command_word comman, char extra_msg[], struct sockaddr_in sender_addr);
@@ -69,36 +69,36 @@ void insert_msg(int version, int packet_num, char sender_name[], char sender_hos
 
 /*
   *
-  *  É¾³ıµÚÒ»ÌõÏûÏ¢
-  *  ²ÎÊı:  ¿Õ
-  *  ·µ»ØÖµ:  ´ı¶¨
+  *  åˆ é™¤ç¬¬ä¸€æ¡æ¶ˆæ¯
+  *  å‚æ•°:  ç©º
+  *  è¿”å›å€¼:  å¾…å®š
   *
   */
 void delete_first_msg();
 
 /*
   *
-  *  »ñÈ¡ÏûÏ¢
+  *  è·å–æ¶ˆæ¯
   *
   */
 int get_msg(msg *m);
 
 /*
   *
-  * ÏÔÊ¾ÏûÏ¢
-  * ²ÎÊı:  ¿Õ
-  * ·µ»ØÖµ:  ´ı¶¨
+  * æ˜¾ç¤ºæ¶ˆæ¯
+  * å‚æ•°:  ç©º
+  * è¿”å›å€¼:  å¾…å®š
   */
 void show_msg_list();
 
-/* ²åÈë½ÓÊÕĞÅÏ¢ */
+/* æ’å…¥æ¥æ”¶ä¿¡æ¯ */
 void insert_recv_msg(msg m);
 
 
-/* È¡½ÓÊÕÏûÏ¢ */
+/* å–æ¥æ”¶æ¶ˆæ¯ */
 int get_recv_msg(msg *m);
 
-/* »ñÈ¡½ÓÊÕÏûÏ¢×ÜÊı */
+/* è·å–æ¥æ”¶æ¶ˆæ¯æ€»æ•° */
 int get_recv_msg_count();
 
 

@@ -45,16 +45,16 @@ int main(int argc, char *argv[])
 	my_address.sin_addr.s_addr = htonl(INADDR_ANY);
 	my_address.sin_port = htons(2425);
  
-	//°ó¶¨UDP socket
+	//ç»‘å®šUDP socket
 	bind(udp_sockfd, (struct sockaddr *)&my_address,
 		(socklen_t)(sizeof(my_address)));
 
-	create_user_list();//´´½¨ÓÃ»§ÁĞ±í
-	create_msg_list();//´´½¨ÏûÏ¢ÁĞ±í
+	create_user_list();//åˆ›å»ºç”¨æˆ·åˆ—è¡¨
+	create_msg_list();//åˆ›å»ºæ¶ˆæ¯åˆ—è¡¨
 
 	login();	
 
-	//´´½¨½ÓÊÕUDPÊı¾İ°üÏß³ÌºÍ´¦ÀíÏûÏ¢Ïß³Ì
+	//åˆ›å»ºæ¥æ”¶UDPæ•°æ®åŒ…çº¿ç¨‹å’Œå¤„ç†æ¶ˆæ¯çº¿ç¨‹
 	pthread_create(&receiver_thread_id, NULL,
 		(void *)*recv_udp_packets_thread, NULL);
 
@@ -64,13 +64,13 @@ int main(int argc, char *argv[])
 	user_interaction();
 	
 	/*int* retn;
-	//µÈµÈ×ÓÏß³Ì½áÊø
+	//ç­‰ç­‰å­çº¿ç¨‹ç»“æŸ
 	if(-1 == pthread_join(receiver_thread_id, (void **)&retn) ||
 		-1 == pthread_join(processor_thread_id, (void **)&retn)){
 		perror("\nthread error");
 	}*/
 
-	//Ö±½ÓÈ¡Ïû×ÓÏß³Ì£¬²»µÈ´ı
+	//ç›´æ¥å–æ¶ˆå­çº¿ç¨‹ï¼Œä¸ç­‰å¾…
 	if (0 != pthread_cancel(receiver_thread_id)) {
 		perror("\nThread of receiver cancelation failed");
 	}
@@ -106,7 +106,7 @@ void login()
 	command = IPMSG_BR_ENTRY;
 	char send_buf[COMLEN];
 
-	//Éú³É¹ã²¥ÏûÏ¢£¬Ó¦ÖØĞÂÉè¼ÆÒ»¸öº¯ÊıÀ´Éú³ÉÏûÏ¢,´ıÍê³É......
+	//ç”Ÿæˆå¹¿æ’­æ¶ˆæ¯ï¼Œåº”é‡æ–°è®¾è®¡ä¸€ä¸ªå‡½æ•°æ¥ç”Ÿæˆæ¶ˆæ¯,å¾…å®Œæˆ......
 	int buf_len=sprintf(send_buf, "1:1:%s:%s:%u:%s", user_name, host_name, command, user_name);
 	
 	client_addr_len = sizeof(client_address);
@@ -117,7 +117,7 @@ void login()
 }
 
 
-//½ÓÊÕUDPÊı¾İ°üµÄÏß³Ì
+//æ¥æ”¶UDPæ•°æ®åŒ…çš„çº¿ç¨‹
 void* recv_udp_packets_thread()
 {
 	//printf("\nHello,i am recv_udp_packets_thread");
@@ -141,15 +141,15 @@ void* recv_udp_packets_thread()
 	return 0;
 }
 
-//´¦ÀíÏûÏ¢µÄÏß³Ì
+//å¤„ç†æ¶ˆæ¯çš„çº¿ç¨‹
 void* process_messages_thread()
 {
 	//printf("\nHello,i am process_messages_thread");
 	msg m;
 	while (!quit) {
 		if (0 == get_msg(&m)) {
-			switch (m.command & 0x000000FF) {//´¦ÀíÏûÏ¢£¬´ıÍê³É......
-            case IPMSG_NOOPERATION: //²»½øĞĞÈÎºÎ²Ù×÷
+			switch (m.command & 0x000000FF) {//å¤„ç†æ¶ˆæ¯ï¼Œå¾…å®Œæˆ......
+            case IPMSG_NOOPERATION: //ä¸è¿›è¡Œä»»ä½•æ“ä½œ
                 //printf("\ni am IPMSG_NOOPERATION");
                 break;
             case IPMSG_BR_ENTRY:
@@ -182,7 +182,7 @@ void* process_messages_thread()
 		}
 		else {
 			//printf("\nmessage list is empty.");
-			//sleep(200);//ÔİÊ±Ã»ÏûÏ¢£¬Ë¯ÃßµÈ´ıÒ»»á£¬ÒÔÃâÀË·ÑCPUÊ±¼ä
+			//sleep(200);//æš‚æ—¶æ²¡æ¶ˆæ¯ï¼Œç¡çœ ç­‰å¾…ä¸€ä¼šï¼Œä»¥å…æµªè´¹CPUæ—¶é—´
 		}
 	}
 	
@@ -190,7 +190,7 @@ void* process_messages_thread()
 }
 
 
-//´¦ÀíUDPÊı¾İ°ü
+//å¤„ç†UDPæ•°æ®åŒ…
 void parse_udp(char* udp, int len, struct sockaddr_in sender_addr)
 {
 	char* end;
@@ -201,7 +201,7 @@ void parse_udp(char* udp, int len, struct sockaddr_in sender_addr)
 	int tmp_index = 0;
 
 	do {
-		end = strpbrk(start, ":");//µÃµ½start´®ÖĞµÚÒ»¸ö':'ºÅµÄµØÖ·£¬ÈôÃ»ÓĞÔò·µ»Ø0
+		end = strpbrk(start, ":");//å¾—åˆ°startä¸²ä¸­ç¬¬ä¸€ä¸ª':'å·çš„åœ°å€ï¼Œè‹¥æ²¡æœ‰åˆ™è¿”å›0
 		if (0 != end && end < (udp+len)) {
 			strncpy(tmp_buf[tmp_index], start, (int)(end-start));
 			tmp_buf[tmp_index][(int)(end-start)] = '\0';
@@ -212,7 +212,7 @@ void parse_udp(char* udp, int len, struct sockaddr_in sender_addr)
 
 	strcpy(tmp_buf[tmp_index], start);
 
-	//½«·ÖÎö½á¹û²åÈëÏûÏ¢ÁĞ±í
+	//å°†åˆ†æç»“æœæ’å…¥æ¶ˆæ¯åˆ—è¡¨
 	insert_msg(atoi(tmp_buf[0]), atoi(tmp_buf[1]), tmp_buf[2], tmp_buf[3], 
 		strtoul(tmp_buf[4], NULL, 10), tmp_buf[5], sender_addr);
 	//show_msg_list();

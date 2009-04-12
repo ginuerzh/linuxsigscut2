@@ -16,7 +16,7 @@
  */
 /*
   *
-  *  IPMsgĞ­ÒéÔ´ÎÄ¼ş
+  *  IPMsgåè®®æºæ–‡ä»¶
   *
   */
 
@@ -31,9 +31,9 @@ extern socket_fd udp_sockfd;
 
 /*
   *
-  *  ·¢ËÍudpÊı¾İ°ü
-  *  ²ÎÊı:ÔİÊ±Ïëµ½µÄÊÇÃüÁî×Ö¡¢¸½¼ÓÏûÏ¢£¬´ıÀ©Õ¹
-  *  ·µ»ØÖµ:´ı¶¨
+  *  å‘é€udpæ•°æ®åŒ…
+  *  å‚æ•°:æš‚æ—¶æƒ³åˆ°çš„æ˜¯å‘½ä»¤å­—ã€é™„åŠ æ¶ˆæ¯ï¼Œå¾…æ‰©å±•
+  *  è¿”å›å€¼:å¾…å®š
   */
 void send_udp_packet(command_word command, char extra_msg[], struct sockaddr_in client_addr)
 {
@@ -42,10 +42,10 @@ void send_udp_packet(command_word command, char extra_msg[], struct sockaddr_in 
 	char send_buf[COMLEN];
 	int buf_len;
 	int client_addr_len;
-	int cur_time = (int)time((time_t *)NULL);//»ñÈ¡ÏµÍ³Ê±¼ä
+	int cur_time = (int)time((time_t *)NULL);//è·å–ç³»ç»Ÿæ—¶é—´
 	
-	switch(command & 0x000000FF){//´¦ÀíÏûÏ¢£¬´ıÍê³É......
-		case IPMSG_NOOPERATION: //²»½øĞĞÈÎºÎ²Ù×÷
+	switch(command & 0x000000FF){//å¤„ç†æ¶ˆæ¯ï¼Œå¾…å®Œæˆ......
+		case IPMSG_NOOPERATION: //ä¸è¿›è¡Œä»»ä½•æ“ä½œ
 			
 			break;
 		case IPMSG_BR_ENTRY:
@@ -73,7 +73,7 @@ void send_udp_packet(command_word command, char extra_msg[], struct sockaddr_in 
 	}	
 }
 
-/* ½ÓÊÕÏûÏ¢ */
+/* æ¥æ”¶æ¶ˆæ¯ */
 void recv_msg(msg m)
 {
 	if((m.command & IPMSG_SENDCHECKOPT) == IPMSG_SENDCHECKOPT) {

@@ -26,30 +26,30 @@ typedef short int bool;
 
 #include "messageUtils.h"
 
-/* ÓÃ»§½»»¥º¯Êı */
+/* ç”¨æˆ·äº¤äº’å‡½æ•° */
 void user_interaction();
 
-/* ´¦ÀíÓÃ»§ÊäÈë */
+/* å¤„ç†ç”¨æˆ·è¾“å…¥ */
 void process_input();
 
 
-/* ÏÔÊ¾°ïÖúĞÅÏ¢ */
+/* æ˜¾ç¤ºå¸®åŠ©ä¿¡æ¯ */
 void show_help_information();
 
 
-/* ÏÔÊ¾ÃüÁîÁĞ±í */
+/* æ˜¾ç¤ºå‘½ä»¤åˆ—è¡¨ */
 void show_command_list();
 
-//×Ô¶¨ÒåLinux ÏÂµÄgetchº¯Êı
+//è‡ªå®šä¹‰Linux ä¸‹çš„getchå‡½æ•°
 char getch();
 
-/* ½ÓÊÕÏûÏ¢ */
+/* æ¥æ”¶æ¶ˆæ¯ */
 void recv_msg(msg m);
 
-/* ÏÔÊ¾½ÓÊÕµ½µÄÏûÏ¢ */
+/* æ˜¾ç¤ºæ¥æ”¶åˆ°çš„æ¶ˆæ¯ */
 void show_recv_msg();
 
-/* ÏÔÊ¾ËùÓĞ½ÓÊÕµ½µÄÏûÏ¢ */
+/* æ˜¾ç¤ºæ‰€æœ‰æ¥æ”¶åˆ°çš„æ¶ˆæ¯ */
 void show_all_recv_msg();
 
 #endif
