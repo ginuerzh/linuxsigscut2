@@ -52,4 +52,7 @@ void show_recv_msg();
 /* 显示所有接收到的消息 */
 void show_all_recv_msg();
 
+/*发送消息*/
+int send_msg();
+
 #endif

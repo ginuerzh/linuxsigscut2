@@ -81,4 +81,12 @@ void show_user_list();
   */
 void get_own_msg();
 
+/*
+  *
+  * 根据用户名称得到用户地址
+  * 参数:   用户名user_name  用户地址client_addr
+  * 返回值:  成功返回0   失败返回1
+  */
+int get_user_by_name(char *user_name, struct user *select_user);
+
 #endif

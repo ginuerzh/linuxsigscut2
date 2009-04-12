@@ -168,5 +168,14 @@ void get_own_msg(user* own){
 	*own = *user_list_head;
 }
 
-
-
+int get_user_by_name(char *user_name, struct user *select_user)
+{
+	user *p;
+	for(p = user_list_head; p != NULL; p = p->next){
+		if(strcmp(p->user_name, user_name) ==0){
+			*select_user = *p;
+			return 0;
+		}
+	}
+	return 1;
+}

@@ -67,6 +67,13 @@ void send_udp_packet(command_word command, char extra_msg[], struct sockaddr_in 
 			if(-1 == sendto(udp_sockfd, send_buf, buf_len, 0, (struct sockaddr *)&client_addr, client_addr_len)) {
 				perror("\nresponse error");
 			}
+		case IPMSG_SENDMSG:
+			buf_len = sprintf(send_buf, "1:%d:%s:%s:%u:%s", cur_time, own.user_name, own.host_name, command, extra_msg);
+			client_addr_len = sizeof(client_addr);
+			if(-1 == sendto(udp_sockfd, send_buf, buf_len, 0, (struct sockaddr *)&client_addr, client_addr_len)) {
+				perror("\nsend error");
+			}
+			break;
 		default:
 
 			break;
@@ -81,5 +88,21 @@ void recv_msg(msg m)
 		sprintf(extra_msg, "%i", m.packet_num);
 		send_udp_packet(IPMSG_RECVMSG, extra_msg, m.sender_addr);
 	}
+}
+
+int send_msg_packet(const char *msg_text, size_t msg_len, int flags, 
+			struct sockaddr_in client_addr)
+{
+	unsigned long send_command = IPMSG_SENDMSG;
+	if (flags == 1) {
+		send_command |= IPMSG_SENDCHECKOPT;
+	}
+	if (flags == 2) {
+		send_command |= IPMSG_SENDCHECKOPT;
+		send_command |= IPMSG_SECRETOPT;
+	}
+	send_udp_packet(send_command, msg_text, client_addr);
+	printf("Send success!");
+	return 0;
 }
 
