@@ -154,7 +154,7 @@ void* process_messages_thread()
                 break;
             case IPMSG_BR_ENTRY:
                 //printf("\ni am IPMSG_BR_ENTRY");
-                printf("\nsomeone broadcast");
+                //printf("\nsomeone broadcast");
                 insert_user(m.sender_name, m.sernder_host_name, m.extra_msg, m.sender_addr);
                 send_udp_packet(IPMSG_ANSENTRY, NULL, m.sender_addr);
                 break;

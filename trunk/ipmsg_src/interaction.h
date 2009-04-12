@@ -18,10 +18,11 @@
 #ifndef INTERACTION_H
 #define INTERACTION_H
 
-#define COMMAND_NUM 8;//供用户使用的命令数量
 #define true 1;
 #define false 0;
 typedef short int bool;
+
+#define MATCH(n) 0 == strcmp(input, command_list[n]) 
 
 #include "messageUtils.h"
 
@@ -47,5 +48,8 @@ void recv_msg(msg m);
 
 /* 显示接收到的消息 */
 void show_recv_msg();
+
+/* 显示所有接收到的消息 */
+void show_all_recv_msg();
 
 #endif
