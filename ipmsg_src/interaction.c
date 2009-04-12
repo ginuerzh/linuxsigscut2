@@ -112,7 +112,7 @@ void process_input()
 				show_user_list();
 			}
 			else if(0 == strcmp(input, command_list[2])) {
-
+				send_msg();
 			}
 			else if(0 == strcmp(input, command_list[3])) {
 
@@ -204,4 +204,28 @@ char getch()
     return ch;
 }
 
+int send_msg()
+{
+	char user_name[30], msg_text[100];
+	struct user select_user;
+	int flags = 0;
+
+	show_user_list();
+	printf("\nPlease input an user's name:\n");
+	scanf("%s",user_name);
+	if(get_user_by_name(user_name, &select_user) != 0){
+		printf("\nWrong input! This user is not exist!");
+		return 1;
+	}
+	printf("\nPlease input the message:\n");
+	scanf("%s", msg_text);
+	printf("\nPlease input the flags:\n");
+	scanf("%d",&flags);
+
+	if(send_msg_packet(msg_text, sizeof(msg_text), flags, select_user.address) != 0){
+		printf("\nSend failed!");
+		return 1;
+	}
+	return 0;
+}
 

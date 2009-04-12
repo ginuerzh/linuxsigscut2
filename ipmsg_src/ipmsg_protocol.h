@@ -29,5 +29,13 @@
   */
 void send_udp_packet(command_word command, char extra_msg[], struct sockaddr_in client_addr);
 
+/*
+  *
+  *  发送消息数据包
+  *  参数:消息文本msg_text  消息长度msg_len  发送地址client_addr 
+  *  	  选项： flags 0－默认，1－需要回复，2－封装
+  *  返回值: 成功返回0   失败返回1
+  */
+int send_msg_packet(const char *msg_text, size_t msg_len, int flags, struct sockaddr_in client_addr);
 
 #endif
