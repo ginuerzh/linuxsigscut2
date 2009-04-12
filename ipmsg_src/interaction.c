@@ -27,15 +27,20 @@
 
 extern bool quit;
 
-const char* command_list[] = {"list", "showuser", "sendmsg", "sendfile", "recvfile", "reflesh", "exit", "help", "recvmsg"};
+const char* command_list[] = {"list", "showuser", "sendmsg", "sendfile", "recvfile", "reflesh", "exit", 
+			      "help", "recvmsg", "recvallmsg", "sendmsg"};
 const char* command_desc[] = {"show command list", "show user list", "send message", "send file", 
-	"receive file", "reflesh the user list", "exit", "show help information", "receive message from message list"};
+			      "receive file", "reflesh the user list", "exit", "show help information", 
+			      "display one message from message list", "display all the messages from message list", "send message"};
+
+const int command_num = 11;
 
 //处理用户输入
 void user_interaction()
 {
 	//show_user_list();
 	//show_command_list();
+	printf("\ntip: you can use [list] command to display the command list.\n");
 	process_input();
 }
 
@@ -46,7 +51,7 @@ void show_command_list()
 	int i;
 	printf("\n----------------------------------------------command list-------------------------------------------");
 	printf("\nCommand        |description");
-	for(i = 0; i < 8; i++){
+	for(i = 0; i < command_num; i++){
 		printf("\n%-15s %-20s", command_list[i], command_desc[i]);
 	}
 }
@@ -98,7 +103,7 @@ void process_input()
 				getch();
 				getch();
 			}
-		}while(c != 10);
+		}while(c != 10 && i < 50);
 		if(input[0] != 10) {
 			if(0 == strcmp(input, command_list[0])) {
 				show_command_list();
@@ -119,7 +124,7 @@ void process_input()
 				login();
 			}
 			else if(0 == strcmp(input, command_list[6])) {
-				printf("Preparing exit ............\n");
+				printf("\nPreparing exit ............\n");
 				exit = true;
 				quit = true;
 				fflush(stdout);
@@ -130,8 +135,16 @@ void process_input()
 			else if(0 == strcmp(input, command_list[8])) {
 				show_recv_msg();
 			}
+			else if(0 == strcmp(input, command_list[9])) {
+				show_all_recv_msg();
+			}
+			//else if(MATCH(10)) {
+			else if(0 == strcmp(input, command_list[10])) {
+				printf("\nplease input the message:\n");
+				fflush(stdout);	
+			}
 			else {
-				printf("\nerror input!");
+				printf("\ninvalid command");
 			}
 		}
 	}
@@ -145,7 +158,7 @@ void show_help_information()
 {
 	printf("\ni am help information.");
 	show_command_list();
-	show_msg_list();
+	//show_msg_list();
 }
 
 /* 显示接收到的消息 */
@@ -158,6 +171,16 @@ void show_recv_msg()
 	else {
 		printf("\n%s: %s", m.sender_name, m.extra_msg);
 	}
+}
+
+/* 显示所有接收到的消息 */
+void show_all_recv_msg()
+{
+	msg m;
+	while(-1 != get_recv_msg(&m)) {
+		printf("\n%s: %s", m.sender_name, m.extra_msg);
+	}
+	printf("\nrecv_msg_list is empty");
 }
 
 
