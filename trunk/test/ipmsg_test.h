@@ -20,11 +20,10 @@
 
 #define true 1;
 #define false 0;
-typedef short int bool;
 
 #define MATCH(n) 0 == strcmp(input, command_list[n]) 
 
-#include "messageUtils.h"
+#include "../core/messageUtils.h"
 
 /* 用户交互函数 */
 void user_interaction();
