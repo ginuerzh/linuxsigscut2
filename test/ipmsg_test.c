@@ -14,18 +14,20 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-#include "interaction.h"
-#include "ipmsg.h"
-#include "ipmsg_protocol.h"
-#include "userUtils.h"
-#include "messageUtils.h"
+
+#include "ipmsg_test.h"
+#include "../core/ipmsg.h"
+#include "../core/ipmsg_protocol.h"
+#include "../core/userUtils.h"
+#include "../core/messageUtils.h"
+#include "../core/core.h"
+
 #include <stdio.h>
 #include <string.h>
 #include <sys/ioctl.h>
 #include <termios.h>
 
-
-extern bool quit;
+bool quit = false;
 
 const char* command_list[] = {"list", "showuser", "sendmsg", "sendfile", "recvfile", "reflesh", "exit", 
 			      "help", "recvmsg", "recvallmsg", "sendmsg"};
@@ -228,4 +230,56 @@ int send_msg()
 	}
 	return 0;
 }
+
+
+socket_fd udp_sockfd;
+struct sockaddr_in my_address;
+
+
+int main(int argc, char *argv[])
+{
+	pthread_t receiver_thread_id;
+	pthread_t processor_thread_id;
+	
+	udp_sockfd = socket(AF_INET,SOCK_DGRAM,0);
+	my_address.sin_family = AF_INET;
+	my_address.sin_addr.s_addr = htonl(INADDR_ANY);
+	my_address.sin_port = htons(2425);
+ 
+	//绑定UDP socket
+	bind(udp_sockfd, (struct sockaddr *)&my_address,
+		(socklen_t)(sizeof(my_address)));
+
+	create_user_list();//创建用户列表
+	create_msg_list();//创建消息列表
+
+	login();	
+
+	//创建接收UDP数据包线程和处理消息线程
+	pthread_create(&receiver_thread_id, NULL,
+		(void *)*recv_udp_packets_thread, NULL);
+
+	pthread_create(&processor_thread_id, NULL, 
+		(void *)*process_messages_thread, NULL);
+
+	user_interaction();
+	
+	/*int* retn;
+	//等等子线程结束
+	if(-1 == pthread_join(receiver_thread_id, (void **)&retn) ||
+		-1 == pthread_join(processor_thread_id, (void **)&retn)){
+		perror("\nthread error");
+	}*/
+
+	//直接取消子线程，不等待
+	if (0 != pthread_cancel(receiver_thread_id)) {
+		perror("\nThread of receiver cancelation failed");
+	}
+	else if ( 0 != pthread_cancel(processor_thread_id)) {
+		perror("\nThread of processor cancelation failed");
+	}
+	
+	return 0;
+}
+
 
