@@ -145,8 +145,8 @@ void show_msg_list()
 	for (p = msg_list_head; p != NULL; p = p->next) {
 		printf("\n%-10d|%-20d|%-20s|%-20s|%-20u|%-20s|%20s", 
 				p->version, p->packet_num, p->sender_name, 
-				p->sernder_host_name, p->command, p->extra_msg,
-				inet_ntoa((p->sender_addr).sin_addr ));
+				p->sernder_host_name, (unsigned int)p->command, p->extra_msg,
+				(char *)inet_ntoa((p->sender_addr).sin_addr ));
 	}
 }
 

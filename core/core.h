@@ -32,9 +32,6 @@ typedef int socket_fd;
 //登录
 void login();
 
-//分析UDP 数据包
-void parse_udp(char* udp, int len, struct sockaddr_in sender_addr);
-
 //接收UDP 数据包
 void* recv_udp_packets_thread();
 
