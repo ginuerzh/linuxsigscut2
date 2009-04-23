@@ -27,7 +27,7 @@
   *  参数:暂时想到的是命令字、附加消息，待扩展
   *  返回值:待定
   */
-void send_udp_packet(command_word command, char extra_msg[], struct sockaddr_in client_addr);
+int send_udp_packet(command_word command, char extra_msg[], struct sockaddr_in client_addr);
 
 /*
   *
@@ -38,4 +38,23 @@ void send_udp_packet(command_word command, char extra_msg[], struct sockaddr_in 
   */
 int send_msg_packet(const char *msg_text, size_t msg_len, int flags, struct sockaddr_in client_addr);
 
+/*
+ *  put the message into a udp package and send it
+ *  return: 0 if succeeded, -1 otherwise
+ */
+int udp_packer_ip(char *message, int message_len, char *ip_address, int port);
+int udp_packer(char *message, int message_len, struct sockaddr_in address);
+
+/*
+ *  分析UDP数据包, 并把结果保存在消息列表
+ */
+void parse_udp(char* udp, int len, struct sockaddr_in sender_addr);
+
+/*
+ *  put the message into a udp BROADCAST package and send it
+ *  it's DIFFERENT from function udp_packer & udp_packer_ip
+ *
+ *  return: 0 if succeeded, -1 otherwise
+ */
+int udp_broadcast_packer(char *message, int len, int port);
 #endif

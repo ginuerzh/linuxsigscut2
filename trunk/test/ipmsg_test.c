@@ -26,6 +26,7 @@
 #include <string.h>
 #include <sys/ioctl.h>
 #include <termios.h>
+#include <pthread.h>
 
 bool quit = false;
 
@@ -63,9 +64,9 @@ void process_input()
 {
 	bool exit =  false;
 	char input[50];
-	char history[10][50];//增加历史记录功能，待扩展......
+	//char history[10][50];//增加历史记录功能，待扩展......
 	char c;
-	int i,j = 0;
+	int i;
 	while(0 == exit) {
 		printf("\nIPMSG >");
 		fflush(stdout);
@@ -80,7 +81,7 @@ void process_input()
 				input[i] = '\0';
 				i--;
 			}
-			else if(c >= 'a' && c <= 'z' || c >= '0' && c <= '9') {
+			else if((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')) {
 				//printf("[a-z]%c", c);
 				putchar(c);
 				input[i] = c;

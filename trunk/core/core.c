@@ -28,6 +28,7 @@
 #include <string.h>
 #include <pthread.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 extern socket_fd udp_sockfd;
 extern struct sockaddr_in my_address;
@@ -59,7 +60,8 @@ void login()
 	char send_buf[COMLEN];
 
 	//生成广播消息，应重新设计一个函数来生成消息,待完成......
-	int buf_len=sprintf(send_buf, "1:1:%s:%s:%u:%s", user_name, host_name, command, user_name);
+	int buf_len=sprintf(send_buf, "1:1:%s:%s:%u:%s", 
+			user_name, host_name, (unsigned int)command, user_name);
 	
 	client_addr_len = sizeof(client_address);
 	if (-1 == sendto(udp_sockfd, send_buf,buf_len, 0, 
@@ -139,35 +141,5 @@ void* process_messages_thread()
 	}
 	
 	return 0;
-}
-
-
-//处理UDP数据包
-void parse_udp(char* udp, int len, struct sockaddr_in sender_addr)
-{
-	char* end;
-	char* start;
-	start = udp;
-	end = 0;
-	char tmp_buf[6][COMLEN/6];
-	int tmp_index = 0;
-
-	do {
-		end = strpbrk(start, ":");//得到start串中第一个':'号的地址，若没有则返回0
-		if (0 != end && end < (udp+len)) {
-			strncpy(tmp_buf[tmp_index], start, (int)(end-start));
-			tmp_buf[tmp_index][(int)(end-start)] = '\0';
-			start = end + 1;
-			tmp_index++;
-		}
-	} while (0 != end);
-
-	strcpy(tmp_buf[tmp_index], start);
-
-	//将分析结果插入消息列表
-	insert_msg(atoi(tmp_buf[0]), atoi(tmp_buf[1]), tmp_buf[2], tmp_buf[3], 
-		strtoul(tmp_buf[4], NULL, 10), tmp_buf[5], sender_addr);
-	//show_msg_list();
-	//printf("\nfinish");
 }
 
