@@ -233,28 +233,13 @@ int send_msg()
 }
 
 
-socket_fd udp_sockfd;
-struct sockaddr_in my_address;
-
-
 int main(int argc, char *argv[])
 {
 	pthread_t receiver_thread_id;
 	pthread_t processor_thread_id;
 	
-	udp_sockfd = socket(AF_INET,SOCK_DGRAM,0);
-	my_address.sin_family = AF_INET;
-	my_address.sin_addr.s_addr = htonl(INADDR_ANY);
-	my_address.sin_port = htons(2425);
- 
-	//绑定UDP socket
-	bind(udp_sockfd, (struct sockaddr *)&my_address,
-		(socklen_t)(sizeof(my_address)));
-
 	create_user_list();//创建用户列表
 	create_msg_list();//创建消息列表
-
-	login();	
 
 	//创建接收UDP数据包线程和处理消息线程
 	pthread_create(&receiver_thread_id, NULL,
@@ -263,6 +248,7 @@ int main(int argc, char *argv[])
 	pthread_create(&processor_thread_id, NULL, 
 		(void *)*process_messages_thread, NULL);
 
+	login();	
 	user_interaction();
 	
 	/*int* retn;
