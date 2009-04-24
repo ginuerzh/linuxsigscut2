@@ -12,10 +12,10 @@
 #include "main.h"
 #include "interface.h"
 #include "support.h"
-#include "ipmsg.h"
-#include "ipmsg_protocol.h"
-#include "userUtils.h"
-#include "messageUtils.h"
+#include "../core/ipmsg.h"
+#include "../core/ipmsg_protocol.h"
+#include "../core/userUtils.h"
+#include "../core/messageUtils.h"
 #include "callbacks.h"
 #include <sys/socket.h>
 #include <sys/types.h>
