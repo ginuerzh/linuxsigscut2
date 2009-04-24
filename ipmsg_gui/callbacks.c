@@ -7,7 +7,7 @@
 #include "callbacks.h"
 #include "interface.h"
 #include "support.h"
-#include "userUtils.h"
+#include "../core/userUtils.h"
 #include "main.h"
 
 extern GtkWidget * treeview;
