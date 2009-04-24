@@ -30,68 +30,65 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-extern socket_fd udp_sockfd;
-extern struct sockaddr_in my_address;
 extern bool quit;
-
 
 void login()
 {
-	int so_broadcast=1;
-	socket_fd client_sockfd;
-	struct sockaddr_in client_address;
-	int client_addr_len;
+	command_word command;
+	command = IPMSG_BR_ENTRY;
+	char send_buf[COMLEN];
 	char *user_name, host_name[HOST_NAME_LEN];
 
 	user_name = (char *)getlogin();
 	if ( 0 != gethostname(host_name, HOST_NAME_LEN) )
 		strcpy(host_name, "HostName");
 
-	client_address.sin_family = AF_INET;
-	client_address.sin_port = htons(2425);
-	client_address.sin_addr.s_addr = inet_addr("255.255.255.255");
-	bzero(&(client_address.sin_zero),8);
-	
-	setsockopt(udp_sockfd,SOL_SOCKET,SO_BROADCAST,
-		&so_broadcast,sizeof(so_broadcast));
-	
-	command_word command;
-	command = IPMSG_BR_ENTRY;
-	char send_buf[COMLEN];
-
 	//生成广播消息，应重新设计一个函数来生成消息,待完成......
 	int buf_len=sprintf(send_buf, "1:1:%s:%s:%u:%s", 
 			user_name, host_name, (unsigned int)command, user_name);
 	
-	client_addr_len = sizeof(client_address);
-	if (-1 == sendto(udp_sockfd, send_buf,buf_len, 0, 
-		(struct sockaddr*)&client_address, client_addr_len)) {
-		perror("\nbroadcast error");
-	}
+	udp_broadcast_packer(send_buf, buf_len, DEFAULT_PORT);
 }
 
 
 //接收UDP数据包的线程
 void* recv_udp_packets_thread()
 {
-	//printf("\nHello,i am recv_udp_packets_thread");
+	int udp_socket;
+	struct sockaddr_in my_address, client_address;
 	char recv_buf[COMLEN];
 	int buf_len;
-	int client_sockfd;
-	struct sockaddr_in client_address;
 	int client_addr_len = sizeof(client_address);
-	
+
+	udp_socket = socket(AF_INET,SOCK_DGRAM,0);
+	if (udp_socket == -1) {
+		printf("socket() ERROR!!!\n");
+		quit = 1;
+	}
+
+	bzero(&my_address, sizeof(my_address));
+	my_address.sin_family = AF_INET;
+	my_address.sin_addr.s_addr = htonl(INADDR_ANY);
+	my_address.sin_port = htons(DEFAULT_PORT);
+ 
+	int bd = bind(udp_socket, (struct sockaddr *)&my_address, 
+			(socklen_t)(sizeof(my_address)));
+	if (bd == -1) {
+		printf("bind() ERROR!!!\n");
+		quit = 1;
+	}
+
 	while (!quit) {
-		buf_len = recvfrom(udp_sockfd, recv_buf, COMLEN, 0, 
+		buf_len = recvfrom(udp_socket, recv_buf, COMLEN, 0, 
 			(struct sockaddr *)&client_address, &client_addr_len);
-		if (buf_len == -1) {
-			perror("\nrecv error");
-			return 0;
+		if (buf_len < 0) {
+			perror("recvfrom() ERROR!!\n");
+			continue;
 		}
-		//printf("\n%s",recv_buf);
 		recv_buf[buf_len] = '\0';
 		parse_udp(recv_buf, buf_len, client_address);
 	}
+	close(udp_socket);
 	return 0;
 }
 

@@ -79,6 +79,6 @@
 #define FILENAME 128
 #define NAMELEN 20
 #define MSGLEN 1400
-#define DEFAULT_PORT 2435
+#define DEFAULT_PORT 2425
 
 #endif

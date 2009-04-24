@@ -53,6 +53,7 @@ void create_msg_list()
 	strcpy(msg_list_head->sernder_host_name, "v_HP");
 	msg_list_head->command = 0;
 	strcpy(msg_list_head->extra_msg, "v_bmouth");
+	struct sockaddr_in my_address;
 	msg_list_head->sender_addr = my_address;
 	msg_list_tail->next = NULL;
 }
