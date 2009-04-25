@@ -69,7 +69,7 @@ void insert_msg(int version, int packet_num, char sender_name[],
 		char sender_host_name[], command_word comman, char extra_msg[], 
 		struct sockaddr_in sender_addr)
 {
-	if (NULL == msg_list_head || NULL == msg_list_tail)
+	if (NULL == msg_list_head && NULL == msg_list_tail)
 		create_msg_list();
 
 	msg* p;
@@ -140,15 +140,21 @@ int get_msg(msg *m)
 void show_msg_list()
 {
 	msg* p;
-	printf("\n----------------------------------------------msg list-------------------------------------------");
-	printf("\nversion   |packet number       |sender name         |sender host name    |command             |extra msg           |sender IP");
-
+	printf("\n---------------msg list---------------\n");
 	for (p = msg_list_head; p != NULL; p = p->next) {
-		printf("\n%-10d|%-20d|%-20s|%-20s|%-20u|%-20s|%20s", 
+		printf("      version: %d\n"
+			   "packet number: %d\n"
+			   "  sender name: %s\n"
+			   "    host name: %s\n"
+			   "      command: %u\n"
+			   "      message: %s\n"
+			   "    sender IP: %s\n"
+			   "-------------------\n", 
 				p->version, p->packet_num, p->sender_name, 
 				p->sernder_host_name, (unsigned int)p->command, p->extra_msg,
 				(char *)inet_ntoa((p->sender_addr).sin_addr ));
 	}
+	printf("---------------msg list------------end\n\n");
 }
 
 /*

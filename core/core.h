@@ -38,5 +38,14 @@ void* recv_udp_packets_thread();
 //处理消息的
 void* process_messages_thread();
 
+/* initial the udp socket */
+int init_udp_socket(socket_fd *sock);
+
+/* return the udp socket */
+int get_udp_socket();
+
+/* free the udp socket */
+int close_udp_socket();
+
 #endif
 
