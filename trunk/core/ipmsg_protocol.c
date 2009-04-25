@@ -139,9 +139,10 @@ int udp_packer(char *message, int message_len, struct sockaddr_in address)
 	int my_socket;
 	int sendto_rt;
 
-	my_socket = socket(AF_INET, SOCK_DGRAM, 0);
+	//my_socket = socket(AF_INET, SOCK_DGRAM, 0);
+	my_socket = get_udp_socket();
 	if (my_socket == -1){
-		perror("\nsocket() fail");
+		perror("\nget_udp_socket() fail");
 		return -1;
 	}
 	sendto_rt = sendto(my_socket, message, message_len, 0,
@@ -150,8 +151,6 @@ int udp_packer(char *message, int message_len, struct sockaddr_in address)
 		perror("\nsendto() fail");
 		return -1;
 	}
-
-	close(my_socket);
 
 	return 0;
 }
@@ -182,6 +181,8 @@ void parse_udp(char* udp, int len, struct sockaddr_in sender_addr)
 	strcpy(tmp_buf[tmp_index], start);
 
 	//将分析结果插入消息列表
+	//printf("parse_udp(): the message: %s, %s, %s, %s, %s, %s\n", 
+	//		tmp_buf[0], tmp_buf[1], tmp_buf[2],tmp_buf[3],tmp_buf[4],tmp_buf[5]);
 	insert_msg(atoi(tmp_buf[0]), atoi(tmp_buf[1]), tmp_buf[2], tmp_buf[3], 
 		strtoul(tmp_buf[4], NULL, 10), tmp_buf[5], sender_addr);
 	//show_msg_list();
@@ -208,8 +209,8 @@ int udp_broadcast_packer(char *message, int len, int port)
 		addr.s_addr = (*(unsigned int *)*he->h_addr_list[0]);
 	}
 
-	if( (socket_br = socket(AF_INET, SOCK_DGRAM, 0)) == -1 ) {
-		perror("socket function!\n");
+	if( (socket_br = get_udp_socket()) == -1 ) {
+		perror("get_udp_socket() error!!\n");
 		return -1;
 	}
 
@@ -227,8 +228,6 @@ int udp_broadcast_packer(char *message, int len, int port)
 		perror("sendto function!\n");
 		return -1;
 	}
-
-	close(socket_br);
 
 	return 0;
 }

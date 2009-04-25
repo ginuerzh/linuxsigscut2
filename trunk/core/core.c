@@ -54,27 +54,15 @@ void login()
 //接收UDP数据包的线程
 void* recv_udp_packets_thread()
 {
-	int udp_socket;
-	struct sockaddr_in my_address, client_address;
+	socket_fd udp_socket;
+	struct sockaddr_in client_address;
 	char recv_buf[COMLEN];
 	int buf_len;
 	int client_addr_len = sizeof(client_address);
 
-	udp_socket = socket(AF_INET,SOCK_DGRAM,0);
+	udp_socket = get_udp_socket();
 	if (udp_socket == -1) {
-		printf("socket() ERROR!!!\n");
-		quit = 1;
-	}
-
-	bzero(&my_address, sizeof(my_address));
-	my_address.sin_family = AF_INET;
-	my_address.sin_addr.s_addr = htonl(INADDR_ANY);
-	my_address.sin_port = htons(DEFAULT_PORT);
- 
-	int bd = bind(udp_socket, (struct sockaddr *)&my_address, 
-			(socklen_t)(sizeof(my_address)));
-	if (bd == -1) {
-		printf("bind() ERROR!!!\n");
+		printf("recv_udp_packets_thread() ERROR!!!\n");
 		quit = 1;
 	}
 
@@ -88,9 +76,10 @@ void* recv_udp_packets_thread()
 		recv_buf[buf_len] = '\0';
 		parse_udp(recv_buf, buf_len, client_address);
 	}
-	close(udp_socket);
+
 	return 0;
 }
+
 
 //处理消息的线程
 void* process_messages_thread()
@@ -133,10 +122,62 @@ void* process_messages_thread()
 		}
 		else {
 			//printf("\nmessage list is empty.");
-			//sleep(200);//暂时没消息，睡眠等待一会，以免浪费CPU时间
+			sleep(1);//暂时没消息，睡眠等待一会，以免浪费CPU时间
 		}
 	}
 	
 	return 0;
 }
 
+
+/* initial the udp socket */
+int init_udp_socket(socket_fd *sock)
+{
+	printf("init_udp_socket()\n");
+	struct sockaddr_in my_address;
+
+	*sock = socket(AF_INET,SOCK_DGRAM,0);
+	if (*sock == -1) {
+		printf("socket() ERROR!!!\n");
+		return -1;
+	}
+
+	bzero(&my_address, sizeof(my_address));
+	my_address.sin_family = AF_INET;
+	my_address.sin_addr.s_addr = htonl(INADDR_ANY);
+	my_address.sin_port = htons(DEFAULT_PORT);
+ 
+	int bd = bind(*sock, (struct sockaddr *)&my_address, 
+			(socklen_t)(sizeof(my_address)));
+	if (bd == -1) {
+		printf("bind() ERROR!!!\n");
+		return -1;
+	}
+
+	return 0;
+}
+
+
+/* return the udp socket */
+int get_udp_socket()
+{
+	static socket_fd sock = -1;
+	if (sock == -1) {
+		if ( -1 == init_udp_socket(&sock) ) // only run once
+			return -1;
+	}
+
+	return sock;
+}
+
+
+/* free the udp socket */
+int close_udp_socket()
+{
+	socket_fd sock = get_udp_socket();
+	if ( -1 == close(sock) ) {
+		perror("close() error!!\n");	
+		return -1;
+	}
+	return 0;
+}

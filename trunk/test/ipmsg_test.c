@@ -131,6 +131,8 @@ void process_input()
 				exit = true;
 				quit = true;
 				fflush(stdout);
+				close_udp_socket();
+
 			}
 			else if(0 == strcmp(input, command_list[7])) {
 				show_help_information();
