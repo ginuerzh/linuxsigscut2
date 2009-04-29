@@ -1,0 +1,36 @@
+#summary The Steps of how IPMsg transports files(not folder)
+
+<pre class=prettyprint>
+The following steps show how IPMsg transports files(not folder):
+
+Step 1: Sender send a UDP package to tell the receiver that it want
+	to send some files. The data of the UDP package is formated as:
+
+	UDP_DATA = "version:myPackageNumber:userName:hostName:command:"
+		+ 'NUL' + FILE_INFO + 'NUL';
+	FILE_INFO = FILE1_INFO + 'BEL' + FILE2_INFO + 'BEL' + ...
+	FILEn_INFO = "fileNumber:fileName:fileSize:fileLastModifyTime:1:"
+
+	Note: fileSize, fileLastModifyTime are hex format.
+
+Step 2: If the receiver accept one of the files, it will build a TCP 
+	connection to the sender with port 2425.
+
+Step 3: After the TCP connection was built, the receiver send a TCP package 
+	to the sender. The data of the TCP package is formated as:
+
+	TCP_DATA = "version:myPackageNumber:userName:hostName:command:"
+		+ "senderPackageNumber:fileNumber:offset:"
+
+	Note: senderPackageNumber, fileNumber, offset are hex format.
+
+Step 4: Now the sender know that the receiver want which file(it got
+	the senderPackageNumber & file Number from step 3). So, it 
+	put the file content into a TCP package and send it to the 
+	receiver.
+
+Step 5: The TCP connection was disconnected.
+
+Step 6: If the receiver want to get the other files, repeat step 2 to 6.
+
+</pre>
