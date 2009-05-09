@@ -21,6 +21,7 @@
   *
   */
 
+#include "network.h"
 #include "userUtils.h"
 #include "core.h"
 
@@ -33,8 +34,6 @@
 #include <string.h>
 #include <unistd.h>
 
-extern socket_fd udp_sockfd;
-extern struct sockaddr_in my_address;
 
 //用户列表表头和表尾，表头存放当前用户自身的信息
 user* user_list_head = NULL;

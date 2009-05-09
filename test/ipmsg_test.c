@@ -21,6 +21,7 @@
 #include "../core/userUtils.h"
 #include "../core/messageUtils.h"
 #include "../core/core.h"
+#include "../core/network.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -237,21 +238,44 @@ int send_msg()
 
 int main(int argc, char *argv[])
 {
-	pthread_t receiver_thread_id;
+	pthread_t udp_receiver_thread_id;
+	pthread_t tcp_receiver_thread_id;
 	pthread_t processor_thread_id;
 	
 	create_user_list();//创建用户列表
 	create_msg_list();//创建消息列表
 
 	//创建接收UDP数据包线程和处理消息线程
-	pthread_create(&receiver_thread_id, NULL,
+	pthread_create(&udp_receiver_thread_id, NULL,
 		(void *)*recv_udp_packets_thread, NULL);
+
+	pthread_create(&tcp_receiver_thread_id, NULL,
+		(void *)*recv_tcp_packets_thread, NULL);
 
 	pthread_create(&processor_thread_id, NULL, 
 		(void *)*process_messages_thread, NULL);
 
 	login();	
+	// ************* file test ****************
+	/*
+	sleep(1);
+	char message[1024], ip[]="125.216.243.216";
+	char zero = 0;
+	int msgLen;
+	command_word commd = IPMSG_SENDMSG | IPMSG_FILEATTACHOPT;
+		
+	msgLen = snprintf(message, 1024, "1_iptux_0#4#5:a:pire:blackbox:%lu:%c10001:file.txt:a:49f5e357:1%c",
+			(unsigned long)commd, zero, zero);
+	printf("%s\n", message);
+	udp_packer_ip(message, msgLen, ip, 2425);
+	while (1) {
+		sleep(1);
+		//show_msg_list();
+	}
+	*/
+	// ************* file test ****************end
 	user_interaction();
+
 	
 	/*int* retn;
 	//等等子线程结束
@@ -261,10 +285,15 @@ int main(int argc, char *argv[])
 	}*/
 
 	//直接取消子线程，不等待
-	if (0 != pthread_cancel(receiver_thread_id)) {
-		perror("\nThread of receiver cancelation failed");
+	if (0 != pthread_cancel(udp_receiver_thread_id)) {
+		perror("\nThread of udp receiver cancelation failed");
 	}
-	else if ( 0 != pthread_cancel(processor_thread_id)) {
+
+	if (0 != pthread_cancel(tcp_receiver_thread_id)) {
+		perror("\nThread of tcp receiver cancelation failed");
+	}
+
+	if ( 0 != pthread_cancel(processor_thread_id)) {
 		perror("\nThread of processor cancelation failed");
 	}
 	
