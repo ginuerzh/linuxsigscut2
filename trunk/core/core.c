@@ -15,6 +15,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include "network.h"
 #include "core.h"
 #include "ipmsg.h"
 #include "ipmsg_protocol.h"
@@ -65,7 +66,7 @@ void* recv_udp_packets_thread()
 		printf("recv_udp_packets_thread() ERROR!!!\n");
 		quit = 1;
 	}
-
+	
 	while (!quit) {
 		buf_len = recvfrom(udp_socket, recv_buf, COMLEN, 0, 
 			(struct sockaddr *)&client_address, &client_addr_len);
@@ -130,54 +131,46 @@ void* process_messages_thread()
 }
 
 
-/* initial the udp socket */
-int init_udp_socket(socket_fd *sock)
+//wait for the incoming TCP connection
+void* recv_tcp_packets_thread()
 {
-	printf("init_udp_socket()\n");
-	struct sockaddr_in my_address;
+	socket_fd new_tcp, tcp_socket;
+	char recv_buf[COMLEN];
+	int buf_len;
+	struct sockaddr_in claddr;
+	int claddrlen = sizeof(claddr);
 
-	*sock = socket(AF_INET,SOCK_DGRAM,0);
-	if (*sock == -1) {
-		printf("socket() ERROR!!!\n");
-		return -1;
+	tcp_socket = get_tcp_socket();
+
+	if (listen(tcp_socket, 5)) {
+		printf("listen() error!\n");	
+		quit = 1;
 	}
 
-	bzero(&my_address, sizeof(my_address));
-	my_address.sin_family = AF_INET;
-	my_address.sin_addr.s_addr = htonl(INADDR_ANY);
-	my_address.sin_port = htons(DEFAULT_PORT);
- 
-	int bd = bind(*sock, (struct sockaddr *)&my_address, 
-			(socklen_t)(sizeof(my_address)));
-	if (bd == -1) {
-		printf("bind() ERROR!!!\n");
-		return -1;
+	/*TODO: create a new child process when accept a connection*/
+	while (!quit) {
+		new_tcp = accept(tcp_socket, (struct sockaddr *) &claddr, &claddrlen);
+		if ( new_tcp < 0) {
+			printf("accept() error! \n");
+			continue;
+		}
+
+		while (!quit) {
+			if ( (buf_len = read(new_tcp, recv_buf, COMLEN) ) < 0) {
+				printf("read() error!\n");
+				close(new_tcp);
+				break;
+			}
+			if (buf_len == 0) {
+				close(new_tcp);
+				break;
+			}
+			recv_buf[buf_len] = 0;
+			printf("got message:%s\n", recv_buf);
+		}
 	}
 
 	return 0;
 }
 
 
-/* return the udp socket */
-int get_udp_socket()
-{
-	static socket_fd sock = -1;
-	if (sock == -1) {
-		if ( -1 == init_udp_socket(&sock) ) // only run once
-			return -1;
-	}
-
-	return sock;
-}
-
-
-/* free the udp socket */
-int close_udp_socket()
-{
-	socket_fd sock = get_udp_socket();
-	if ( -1 == close(sock) ) {
-		perror("close() error!!\n");	
-		return -1;
-	}
-	return 0;
-}

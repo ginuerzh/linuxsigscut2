@@ -27,7 +27,6 @@
 #define false 0;
 
 typedef short int bool;
-typedef int socket_fd;
 
 //登录
 void login();
@@ -38,14 +37,6 @@ void* recv_udp_packets_thread();
 //处理消息的
 void* process_messages_thread();
 
-/* initial the udp socket */
-int init_udp_socket(socket_fd *sock);
-
-/* return the udp socket */
-int get_udp_socket();
-
-/* free the udp socket */
-int close_udp_socket();
-
+//wait for the incoming TCP connection
+void* recv_tcp_packets_thread();
 #endif
-

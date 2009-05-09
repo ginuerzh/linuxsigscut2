@@ -20,6 +20,7 @@
   *
   */
 
+#include "network.h"
 #include "ipmsg_protocol.h"
 #include "ipmsg.h"
 #include "core.h"
@@ -35,9 +36,6 @@
 #include<netinet/in.h>
 #include<sys/types.h>
 #include<netdb.h>
-
-
-extern socket_fd udp_sockfd;
 
 /*
   *
