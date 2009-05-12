@@ -219,12 +219,13 @@ int send_msg()
 	show_user_list();
 	printf("\nPlease input an user's name:\n");
 	scanf("%s",user_name);
+	getchar(); //Get the newline input from the keyboard. --Yegui
 	if(get_user_by_name(user_name, &select_user) != 0){
 		printf("\nWrong input! This user is not exist!");
 		return 1;
 	}
 	printf("\nPlease input the message:\n");
-	scanf("%s", msg_text);
+	fgets(msg_text, sizeof(msg_text), stdin); //Get the full sentence with a safe way. --Yegui
 	printf("\nPlease input the flags:\n");
 	scanf("%d",&flags);
 
