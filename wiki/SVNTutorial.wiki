@@ -1,7 +1,0 @@
-#A brief tutorial for SVN
-
-= Introduction =
-
-http://www.owlnet.rice.edu/~comp314/svn.html
-
-= Details =
